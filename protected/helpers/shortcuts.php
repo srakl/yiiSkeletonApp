@@ -37,23 +37,6 @@ function absUrl($route, $params = array(), $schema = '', $ampersand = '&') {
 }
 
 /**
- * Returns url of the node. Used to download files created on that node
- * This url is faked to get better performance
- * @param type $route
- * @param type $params
- * @param type $ampersand
- * @return type 
- */
-function absNodeUrl($route, $params = array(), $schema =  'http', $ampersand = '&') {
-    if (YOOVII_TEST) {
-        $url = $schema . '://dev' . INSTANCE . '.yoovii.com';
-    } else {
-        $url = $schema . '://node' . INSTANCE . '.yoovii.com';
-    }
-    return $url . Yii::app()->createUrl($route, $params, $ampersand);
-}
-
-/**
  * This is the shortcut to Yii::app()->request->baseUrl
  * If the parameter is given, it will be returned and prefixed with the app baseUrl.
  */
