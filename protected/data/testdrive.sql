@@ -49,30 +49,6 @@ INSERT INTO `events` (`id`,`title`,`all_day`,`start`,`end`,`url`,`class_name`,`e
 
 
 --
--- Definition of table `fb_user`
---
-
-DROP TABLE IF EXISTS `fb_user`;
-CREATE TABLE `fb_user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `fb_uid` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`,`user_id`) USING BTREE,
-  KEY `user_fb_fk` (`user_id`),
-  CONSTRAINT `user_fb_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 PACK_KEYS=0;
-
---
--- Dumping data for table `fb_user`
---
-
-/*!40000 ALTER TABLE `fb_user` DISABLE KEYS */;
-INSERT INTO `fb_user` (`id`,`user_id`,`fb_uid`) VALUES 
- (1,1,'100002077901514');
-/*!40000 ALTER TABLE `fb_user` ENABLE KEYS */;
-
-
---
 -- Definition of table `user`
 --
 
@@ -107,9 +83,23 @@ CREATE TABLE `user` (
 
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`,`username`,`email`,`first_name`,`last_name`,`address`,`city`,`state`,`postal_code`,`phone`,`password`,`salt`,`activate`,`last_login`,`password_reset`,`admin`,`email_verified`,`login_disabled`) VALUES 
- (1,'admin','stroud.travis@gmail.com','Travis','Stroud','1000 Rio Grande','El Paso','TX','79902','9152555347','3b9a88a5e94a64e374c43ca5e36fa568d8cff2de','8aa2c95dc0a6833d2d0cb944555739cc','','2013-02-09 23:28:15',1360285721,1,1,0),
- (2,'','travis@travisstroud.co.uk','Travis','Stroud','','','','','','b5d7095ade54ae7f79558d7830bd0d22b63e6d62','81836b7cd16991abb7febfd7832927fd','70458437d5f122c68ed8e87f84e64392','2013-02-09 22:54:10',0,0,0,0);
+ (1,'admin','admin@yourdomain.com','','','','','','','','9d2e66e2cfedbf1c7a43c68070d16f6ef82306d8','9306b519cdfe94d2c8fc0e733b0b8842','','2013-02-09 23:28:15',0,1,1,0),
+ (2,'demo','demo@yourdomain.com','','','','','','','','87b553694217779542c68a1ada3e2270d189c8a9','005c03bfd9d4df48aa46f6e6dfb92439','70458437d5f122c68ed8e87f84e64392','2013-02-09 22:54:10',0,0,1,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+
+--
+-- Definition of table `fb_user`
+--
+
+DROP TABLE IF EXISTS `fb_user`;
+CREATE TABLE `fb_user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `fb_uid` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`,`user_id`) USING BTREE,
+  KEY `user_fb_fk` (`user_id`),
+  CONSTRAINT `user_fb_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 PACK_KEYS=0;
 
 
 
