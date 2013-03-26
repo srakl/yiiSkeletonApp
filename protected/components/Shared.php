@@ -32,7 +32,6 @@ class Shared extends CApplicationComponent {
 
     /**
      * Set the flash message to show debug output on the next page
-     * Widged ZienDebug is called for displaying the message.
      * @param <type> $object
      * @param <type> $message 
      */
@@ -452,7 +451,7 @@ class Shared extends CApplicationComponent {
     public static function sendEmail($subject, $body, $toEmail, $toName = null, $fromEmail = null, $fromName = null, $html = true, $attachment = null) {
         //Yii::import('application.extensions.phpmailer.JPhpMailer');
         $mail = self::getMailer();
-        
+
         Shared::debug("sending email");
         if ($fromEmail == null || !self::isEmailValid($fromEmail)) {
             $fromEmail = Yii::app()->params['email']['noReplySender'];
@@ -503,7 +502,7 @@ class Shared extends CApplicationComponent {
             $mail->AddAttachment($attachment);
         }
 
-        if (false/*AUSA_TEST*/) {
+        if (false) {
             self::debug("test is on");
             // do not send emails on testing server
             if (Yii::app()->params['email']['testEmail']) {
@@ -576,7 +575,7 @@ class Shared extends CApplicationComponent {
      * @return <type> 
      */
     public static function removeDiacritics($string) {
-        $search = explode(",", "ç,æ,œ,á,é,í,ó,ú,à,è,ì,ò,ù,ä,ë,ï,ö,ü,ÿ,â,ê,î,ô,û,å,e,i,ø,u,ř,ý,č,ň,");
+        $search = explode(",", "ç,æ,œ,á,é,í,ó,ú,à,è,ì,ò,ù,ä,ë,ï,ö,ü,ÿ,â,ê,î,ô,û,å,e,i,ø,u,ř,ý,�?,ň,");
         $replace = explode(",", "c,ae,oe,a,e,i,o,u,a,e,i,o,u,a,e,i,o,u,y,a,e,i,o,u,a,e,i,o,u,r,y,c,n");
         return str_replace($search, $replace, $string);
     }
@@ -585,7 +584,7 @@ class Shared extends CApplicationComponent {
      * Format phone number to make it look nicer
      */
     public static function formatPhone($number) {
-        $number = preg_replace("/[^0-9]/","",$number);
+        $number = preg_replace("/[^0-9]/", "", $number);
         if (strlen($number) == 10) {
             return "(" . substr($number, 0, 3) . ") " . substr($number, 3, 3) . "-" . substr($number, 6);
         }
