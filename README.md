@@ -13,3 +13,9 @@ I've included some extensions that I pretty much always use. These include:
 * Twitter Bootstrap
 * FontAwesome
 * LESS PHP Compiler
+
+## Install
+
+To install this skeleton application:
+1. Extract everything to your web root.
+2. Download the [Yii Framework](https://github.com/yiisoft/yii/tree/master/framework/) and extract to the /yii/ directory.
