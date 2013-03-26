@@ -23,7 +23,7 @@
  * @property integer $email_verified
  * @property integer $login_disabled
  */
-class User extends EActiveRecord {
+class User extends CActiveRecord {
 
     /**
      * Used for password change and registration
