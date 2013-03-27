@@ -7,7 +7,7 @@ Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' 
 return array(
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
     'name' => 'Yii Skeleton App',
-    'preload' => array('less', 'log'),
+    'preload' => array('app', 'less', 'log'),
     // autoloading model and component classes
     'import' => array(
         'application.models.*',
@@ -26,6 +26,9 @@ return array(
     ),
     // application components
     'components' => array(
+        'app' => array(
+            'class' => 'ext.app.components.app'
+        ),
         'user' => array(
             'class' => 'WebUser',
             'allowAutoLogin' => false,
