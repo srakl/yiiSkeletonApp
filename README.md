@@ -1,5 +1,6 @@
 Yii Framework Skeleton App
 ======================
+[![Build Status](https://secure.travis-ci.org/travisstroud/yiiSkeletonApp.png)](http://travis-ci.org/travisstroud/yiiSkeletonApp)
 
 This is a generic Yii Framework application with MySQL integration. I built this simple app as the starting point for
 many projects I have worked on in the past. This application allows for user registration, user sign-in and sign-out,
