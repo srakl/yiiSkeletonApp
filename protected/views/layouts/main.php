@@ -15,8 +15,8 @@
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
 
-        <title><?php echo CHtml::encode($this->pageTitle); ?></title>
-        <?php Yii::app()->bootstrap->register(); ?>
+        <title><?php echo h($this->pageTitle); ?></title>
+        <?php app()->bootstrap->register(); ?>
     </head>
 
     <body>
@@ -24,7 +24,7 @@
         <div class="container" id="page">
 
             <div id="header">
-                <div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+                <div id="logo"><?php echo h(app()->name); ?></div>
             </div><!-- header -->
 
             <div id="mainmenu">
@@ -32,7 +32,6 @@
                 $this->widget('zii.widgets.CMenu', array(
                     'items' => array(
                         array('label' => 'Home', 'url' => array('/site/index')),
-                        array('label' => 'Events', 'url' => array('/events/index')),
                         array('label' => 'Profile', 'url' => array('/user/update', 'id' => app()->user->id), 'visible' => !app()->user->isGuest()),
                         array('label' => 'Users', 'url' => array('/user/index'), 'visible' => app()->user->isAdmin()),
                         array('label' => 'Register', 'url' => array('/user/register'), 'visible' => app()->user->isGuest),

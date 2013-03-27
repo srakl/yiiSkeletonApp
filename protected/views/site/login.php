@@ -1,6 +1,6 @@
 <?php
 
-$this->pageTitle = Yii::app()->name . ' - Login';
+$this->pageTitle = app()->name . ' - Login';
 $this->breadcrumbs = array(
     'Login',
 );
@@ -43,7 +43,13 @@ $this->breadcrumbs = array(
             'label' => 'Login',
         ));
         ?>
-        <?php $this->widget('application.components.widgets.FBConnect'); ?>
+        <?php
+        /**
+         * This renders the Facebook Single Sign-On button.
+         * Comment it out to disable Facebook login.
+         */
+            $this->widget('application.components.widgets.FBConnect');
+        ?>
     </div>
 
     <div class="row"><a href="<?php echo url('user/forgotPassword'); ?>">Forgot password?</a></div>

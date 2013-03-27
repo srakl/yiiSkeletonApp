@@ -22,33 +22,6 @@ CREATE DATABASE IF NOT EXISTS testdrive;
 USE testdrive;
 
 --
--- Definition of table `events`
---
-
-DROP TABLE IF EXISTS `events`;
-CREATE TABLE `events` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(64) NOT NULL,
-  `all_day` tinyint(1) NOT NULL,
-  `start` int(11) unsigned NOT NULL,
-  `end` int(11) unsigned DEFAULT NULL,
-  `url` varchar(255) NOT NULL,
-  `class_name` varchar(32) NOT NULL,
-  `editable` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `events`
---
-
-/*!40000 ALTER TABLE `events` DISABLE KEYS */;
-INSERT INTO `events` (`id`,`title`,`all_day`,`start`,`end`,`url`,`class_name`,`editable`) VALUES 
- (1,'Event One',0,1360677600,1360706400,'','',0);
-/*!40000 ALTER TABLE `events` ENABLE KEYS */;
-
-
---
 -- Definition of table `user`
 --
 
