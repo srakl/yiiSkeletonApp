@@ -9,6 +9,7 @@ I've included some extensions that I pretty much always use. These include:
 * Twitter Bootstrap
 * Font Awesome
 * LESS PHP Compiler
+* Notify Bar ([link](https://github.com/dknight/jQuery-Notify-bar))
 
 ## Install
 To install this skeleton application:
