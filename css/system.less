@@ -1,0 +1,40 @@
+// General Colors
+@grey: #efefef;
+@black: #000;
+@green: #060;
+@lightGreen: #bbffb6;
+@red: #f00;
+@lightRed: #fdd;
+
+// General System Styles
+body { padding-top: 60px; }
+
+// Notify Bar CSS
+.jquery-notify-bar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 32768;
+    background-color: @grey;
+    font-size: 18px;
+    color: @black;
+    text-align: center;
+    font-family: Arial, Verdana, sans-serif;
+    padding: 20px 0px;
+    border-bottom: 1px solid #bbb;
+    cursor: pointer;
+    .error {
+        color: @red;
+        background-color: @lightRed;
+    }
+    .success {
+        color: @green;
+        background-color: @green;
+    }
+}
+.notify-bar-close {
+    position: absolute;
+    left: 95%;
+    font-size: 11px;
+}
