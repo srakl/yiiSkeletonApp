@@ -27,7 +27,7 @@ return array(
     // application components
     'components' => array(
         'app' => array(
-            'class' => 'ext.app.components.app'
+            'class' => 'ext.app.components.app',
         ),
         'user' => array(
             'class' => 'WebUser',
