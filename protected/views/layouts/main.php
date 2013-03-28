@@ -1,4 +1,11 @@
-<?php /* @var $this Controller */ ?>
+<?php
+/* @var $this Controller */
+
+if(app()->user->hasFlash('success')) {
+    cs()->registerScript('alert','showSuccess(\''.app()->user->getFlash('success').'\');');
+}
+
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
@@ -18,7 +25,7 @@
         <?php
         $this->widget('bootstrap.widgets.TbNavbar', array(
             'brand' => h(app()->name),
-            'brandUrl' => '#',
+            'brandUrl' => bu(),
             'collapse' => true,
             'items'=>array(
                 array(
@@ -27,36 +34,60 @@
                         array('label' => 'Home', 'url' => array('/site/index')),
                         array('label' => 'Profile', 'url' => array('/user/update', 'id' => app()->user->id), 'visible' => !app()->user->isGuest()),
                         array('label' => 'Users', 'url' => array('/user/index'), 'visible' => app()->user->isAdmin()),
-                        array('label' => 'Register', 'url' => array('/user/register'), 'visible' => app()->user->isGuest),
-                        array('label' => 'Login', 'url' => array('/site/login'), 'visible' => app()->user->isGuest),
-                        array('label' => 'Logout (' . app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !app()->user->isGuest)
                     ),
                 ),
+                app()->user->isGuest?
+                    array(
+                        'class' => 'bootstrap.widgets.TbButton',
+                        'htmlOptions' => array('class' => 'pull-right'),
+                        'label'=>'Login',
+                        'type'=>'success',
+                        'size'=>'normal',
+                        'url'=>array('/site/login'),
+                    )
+                :
+                    array(
+                        'class' => 'bootstrap.widgets.TbButton',
+                        'htmlOptions' => array('class' => 'pull-right'),
+                        'label'=>'Logout',
+                        'type'=>'warning',
+                        'size'=>'normal',
+                        'url'=>array('/site/logout'),
+                    )
+                ,
+                (app()->user->isGuest?array(
+                    'class' => 'bootstrap.widgets.TbButton',
+                    'htmlOptions' => array('class' => 'pull-right', 'style' => 'margin-right: 5px'),
+                    'label'=>'Register',
+                    'type'=>'',
+                    'size'=>'normal',
+                    'url'=>array('/user/register'),
+                ):''),
             ),
-            ));
+        ));
         ?>
 
-        <div class="container" id="page">
-
-            <?php if (isset($this->breadcrumbs)): ?>
-                <?php
-                $this->widget('zii.widgets.CBreadcrumbs', array(
+        <div class="container main-holder">
+            
+            <?php
+            if(isset($this->breadcrumbs)){
+                $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
                     'links' => $this->breadcrumbs,
                 ));
-                ?><!-- breadcrumbs -->
-            <?php endif ?>
-
+            }
+            ?>
+            
             <?php echo $content; ?>
+            
+        </div>
 
-            <div class="clear"></div>
-
-            <div id="footer">
+        <footer class="footer" id="footer">
+            <div class="container">
                 Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
                 All Rights Reserved.<br/>
                 <?php echo Yii::powered(); ?>
-            </div><!-- footer -->
-
-        </div><!-- page -->
+            </div>
+        </footer>
 
     </body>
 </html>

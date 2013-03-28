@@ -1,13 +1,12 @@
 // General Colors
-@grey: #efefef;
-@black: #000;
-@green: #060;
-@lightGreen: #bbffb6;
-@red: #f00;
-@lightRed: #fdd;
+@grey: #ebebeb;
+@green: #8dc96f;
+@red: #db4444;
 
 // General System Styles
-body { padding-top: 60px; }
+html, body { height: 100%; }
+.main-holder { padding-top: 60px; }
+.footer { text-align: center; margin-top: 70px; }
 
 // Notify Bar CSS
 .jquery-notify-bar {
@@ -18,20 +17,20 @@ body { padding-top: 60px; }
     z-index: 32768;
     background-color: @grey;
     font-size: 18px;
-    color: @black;
+    color: #555555;
     text-align: center;
     font-family: Arial, Verdana, sans-serif;
     padding: 20px 0px;
     border-bottom: 1px solid #bbb;
     cursor: pointer;
-    .error {
-        color: @red;
-        background-color: @lightRed;
-    }
-    .success {
-        color: @green;
-        background-color: @green;
-    }
+}
+.jquery-notify-bar.error {
+    color: #fff0f0;
+    background-color: @red;
+}
+.jquery-notify-bar.success {
+    color: #ffffff;
+    background-color: @green;
 }
 .notify-bar-close {
     position: absolute;

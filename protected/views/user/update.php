@@ -2,10 +2,6 @@
 /* @var $this UserController */
 /* @var $model User */
 
-if(app()->user->hasFlash('success')) {
-    cs()->registerScript('updates','alert(\''.app()->user->getFlash('success').'\');');
-}
-
 $this->breadcrumbs=array(
 	'Users'=>array('index'),
 	$model->id=>array('view','id'=>$model->id),
@@ -19,9 +15,6 @@ $this->menu=array(
 	//array('label'=>'Manage User', 'url'=>array('admin')),
 );
 
-if(app()->user->hasFlash('success')) {
-    cs()->registerScript('updates','alert(\''.app()->user->getFlash('success').'\');');
-}
 ?>
 
 <h1>Update User <?php echo $model->id; ?></h1>

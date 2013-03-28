@@ -1,11 +1,7 @@
 <?php
 /* @var $this SiteController */
 
-$this->pageTitle=app()->name;
-
-if(app()->user->hasFlash('success')) {
-    cs()->registerScript('updates','alert(\''.app()->user->getFlash('success').'\');');
-}
+$this->pageTitle = app()->name;
 ?>
 
 <h1>Welcome to <i><?php echo h(Yii::app()->name); ?></i></h1>
