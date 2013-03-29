@@ -123,7 +123,7 @@ class UserController extends Controller {
             if (isset($_POST['User'])) {
                 $model->attributes = $_POST['User'];
                 if ($model->validate()) {
-                    $model->password = sha1($model->salt . $_POST['User']['pass1']);
+                    $model->password = crypt($_POST['User']['pass1'], Randomness::blowfishSalt());
                     if ($model->save()) {
                         app()->user->setFlash('success', 'Saved new password!');
                         $this->redirect(array('update', 'id' => $model->id));

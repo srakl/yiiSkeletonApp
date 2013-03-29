@@ -19,7 +19,7 @@ class UserIdentity extends CUserIdentity {
             $this->errorCode = self::ERROR_USERNAME_INVALID;
         } else if ($user->login_disabled == 1) {
             $this->errorCode = self::ERROR_USERNAME_INVALID;
-        } else if ($user->password != sha1($user->salt . $this->password)&&!$this->_fbAuth) {
+        } elseif ($user->password != crypt($this->password, $user->password)&&!$this->_fbAuth) {
             $this->errorCode = self::ERROR_PASSWORD_INVALID;
         } else {
             $this->errorCode = self::ERROR_NONE;

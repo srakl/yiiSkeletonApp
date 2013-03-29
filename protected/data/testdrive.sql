@@ -28,7 +28,6 @@ USE testdrive;
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(150) NOT NULL,
   `email` varchar(255) NOT NULL,
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
@@ -38,7 +37,6 @@ CREATE TABLE `user` (
   `postal_code` varchar(45) NOT NULL,
   `phone` varchar(45) NOT NULL,
   `password` varchar(63) NOT NULL,
-  `salt` varchar(63) NOT NULL,
   `activate` varchar(63) NOT NULL,
   `last_login` datetime NOT NULL,
   `password_reset` int(11) unsigned NOT NULL,
@@ -46,7 +44,6 @@ CREATE TABLE `user` (
   `email_verified` tinyint(1) unsigned NOT NULL,
   `login_disabled` tinyint(1) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_username` (`username`) USING BTREE,
   UNIQUE KEY `unique_email` (`email`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
@@ -55,9 +52,9 @@ CREATE TABLE `user` (
 --
 
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` (`id`,`username`,`email`,`first_name`,`last_name`,`address`,`city`,`state`,`postal_code`,`phone`,`password`,`salt`,`activate`,`last_login`,`password_reset`,`admin`,`email_verified`,`login_disabled`) VALUES 
- (1,'admin','admin@yourdomain.com','','','','','','','','9d2e66e2cfedbf1c7a43c68070d16f6ef82306d8','9306b519cdfe94d2c8fc0e733b0b8842','','2013-02-09 23:28:15',0,1,1,0),
- (2,'demo','demo@yourdomain.com','','','','','','','','87b553694217779542c68a1ada3e2270d189c8a9','005c03bfd9d4df48aa46f6e6dfb92439','70458437d5f122c68ed8e87f84e64392','2013-02-09 22:54:10',0,0,1,0);
+INSERT INTO `user` (`id`,`email`,`first_name`,`last_name`,`address`,`city`,`state`,`postal_code`,`phone`,`password`,`activate`,`last_login`,`password_reset`,`admin`,`email_verified`,`login_disabled`) VALUES 
+ (1,'admin@yourdomain.com','','','','','','','','$2a$10$wODTQSlr.4e3Lz2VssUYE.XLvHKtTDKXtaGwkCcUccCygIsRn4.Va','','2013-02-09 23:28:15',0,1,1,0),
+ (2,'demo@yourdomain.com','','','','','','','','$2a$10$Pg6UXbH2K5rE2pFkuzBIXOe.JDm0fS54TLJ.yOj/j/7T0nh9Gx5dm','','2013-02-09 22:54:10',0,0,1,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
 --

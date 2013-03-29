@@ -19,7 +19,7 @@ class ECurrentPassword extends CValidator {
         } else {
             $user = app()->user->getUser();
             $model = User::model()->findByPk($user->id);
-            if (sha1($model['salt'] . $password) !== $model['password']) {
+            if($model['password'] != crypt($password, $model['password'])) {
                 return false;
             } else {
                 return true;

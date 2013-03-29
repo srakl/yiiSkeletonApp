@@ -5,7 +5,6 @@
  *
  * The followings are the available columns in table 'users':
  * @property string $id
- * @property string $username
  * @property string $email
  * @property string $first_name
  * @property string $last_name
@@ -15,7 +14,6 @@
  * @property string $postal_code
  * @property string $phone
  * @property string $password
- * @property string $salt
  * @property string $activate
  * @property string $last_login
  * @property string $password_reset
@@ -64,7 +62,7 @@ class User extends CActiveRecord {
             array('password, pass2', 'required', 'on' => 'register'),
             array('pass2', 'compare', 'compareAttribute' => 'password', 'on' => 'register'),
             array('admin, email_verified, login_disabled', 'numerical', 'integerOnly' => true),
-            array('email, password, salt', 'length', 'max' => 63),
+            array('email, password', 'length', 'max' => 63),
             array('address', 'length', 'max' => 511),
             array('phone', 'length', 'max' => 12),
             array('first_name, last_name', 'length', 'max' => 45),
@@ -77,7 +75,7 @@ class User extends CActiveRecord {
             array('last_login', 'safe'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                //array('user_id, username, email_address, first_name, last_name, address, phone_number, password, salt, super_admin, params, last_login, email_verified, password_reset, login_disabled', 'safe', 'on' => 'search'),
+                //array('user_id, email_address, first_name, last_name, address, phone_number, password, super_admin, params, last_login, email_verified, password_reset, login_disabled', 'safe', 'on' => 'search'),
         );
     }
 
@@ -97,7 +95,6 @@ class User extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
-            'username' => 'Username',
             'email' => 'Email',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
@@ -107,7 +104,6 @@ class User extends CActiveRecord {
             'postal_code' => 'Postal Code',
             'phone' => 'Phone',
             'password' => 'Password',
-            'salt' => 'Salt',
             'activate' => 'Activate',
             'last_login' => 'Last Login',
             'password_reset' => 'Password Reset',
@@ -138,7 +134,6 @@ class User extends CActiveRecord {
       $criteria->compare('address',$this->address,true);
       $criteria->compare('phone_number',$this->phone_number,true);
       $criteria->compare('password',$this->password,true);
-      $criteria->compare('salt',$this->salt,true);
       $criteria->compare('super_admin',$this->super_admin);
       $criteria->compare('params',$this->params,true);
       $criteria->compare('last_login',$this->last_login,true);
@@ -174,12 +169,11 @@ class User extends CActiveRecord {
             $model = new User;
             $model->attributes = $input;
 
-            // create new one if nothing is provided
+            // create new one if nothing is provided (due to rules, this should not happen even for admins)
             if (strlen($model->password) == 0) {
                 $password = Shared::generateMnemonicPassword(8);
             }
-            $model->salt = md5(rand());
-            $model->password = sha1($model->salt . $password);
+            $model->password = crypt($input['password'], Randomness::blowfishSalt());
             $model->email = strtolower($model->email);
         }
         return $model;
@@ -239,8 +233,7 @@ class User extends CActiveRecord {
     public function setPassword($password) {
         if (strlen($password) > 0) {
             // change password
-            $this->salt = md5(rand());
-            $this->password = sha1($this->salt . $password);
+            $this->password = crypt($password, Randomness::blowfishSalt());
         } else {
             // keep the original one
             $this->restoreAttribute('password');

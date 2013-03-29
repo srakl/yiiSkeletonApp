@@ -10,6 +10,7 @@ I've included some extensions that I pretty much always use. These include:
 * Font Awesome
 * LESS PHP Compiler
 * Notify Bar ([GitHub](https://github.com/dknight/jQuery-Notify-bar))
+* Randomness ([GitHub](https://github.com/tom--/Randomness))
 
 ## Install
 To install this skeleton application:
