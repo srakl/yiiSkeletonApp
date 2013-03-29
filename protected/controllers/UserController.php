@@ -6,7 +6,7 @@ class UserController extends Controller {
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
      * using two-column layout. See 'protected/views/layouts/column2.php'.
      */
-    public $layout = '//layouts/column2';
+    //public $layout = '//layouts/column2';
 
     /**
      * @return array action filters
@@ -59,7 +59,6 @@ class UserController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionRegister() {
-        ;
         $model = new User('register');
         //$this->performAjaxValidation($model);
         if (isset($_POST['User'])) {
@@ -70,6 +69,8 @@ class UserController extends Controller {
 
                 // send the user an activation link email (later)
                 $model->save();
+                app()->user->setFlash('success', 'Registration successful. Check your email.');
+                $this->redirect(app()->user->getHomeUrl());
             }
         }
         // render the create form

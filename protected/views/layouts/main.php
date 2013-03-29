@@ -3,6 +3,8 @@
 
 if(app()->user->hasFlash('success')) {
     cs()->registerScript('alert','showSuccess(\''.app()->user->getFlash('success').'\');');
+} elseif(app()->user->hasFlash('error')) {
+    cs()->registerScript('alert','showError(\''.app()->user->getFlash('error').'\');');
 }
 
 ?>
@@ -26,7 +28,7 @@ if(app()->user->hasFlash('success')) {
         $this->widget('bootstrap.widgets.TbNavbar', array(
             'brand' => h(app()->name),
             'brandUrl' => bu(),
-            'collapse' => true,
+            'collapse' => false, // bootstrap responsive layout
             'items'=>array(
                 array(
                     'class'=>'bootstrap.widgets.TbMenu',
@@ -59,7 +61,7 @@ if(app()->user->hasFlash('success')) {
                     'class' => 'bootstrap.widgets.TbButton',
                     'htmlOptions' => array('class' => 'pull-right', 'style' => 'margin-right: 5px'),
                     'label'=>'Register',
-                    'type'=>'',
+                    'type'=>'info',
                     'size'=>'normal',
                     'url'=>array('/user/register'),
                 ):''),

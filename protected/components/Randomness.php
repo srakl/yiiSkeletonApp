@@ -1,7 +1,6 @@
 <?php
 
-class Randomness
-{
+class Randomness {
 
     /**
      * Platform independent strlen()
@@ -16,11 +15,8 @@ class Randomness
      *
      * @return int
      */
-    public static function strlen($string)
-    {
-        return function_exists('mb_strlen')
-            ? mb_strlen($string, 'ISO-8859-1')
-            : strlen($string);
+    public static function strlen($string) {
+        return function_exists('mb_strlen') ? mb_strlen($string, 'ISO-8859-1') : strlen($string);
     }
 
     /**
@@ -35,18 +31,14 @@ class Randomness
      *
      * @return string
      */
-    public static function substr($string, $start = 0, $length = null)
-    {
+    public static function substr($string, $start = 0, $length = null) {
         if (func_num_args() < 3) {
             $length = self::strlen($string);
         }
-        return function_exists('mb_substr')
-            ? mb_substr($string, $start, $length, 'ISO-8859-1')
-            : substr($string, $start, $length);
+        return function_exists('mb_substr') ? mb_substr($string, $start, $length, 'ISO-8859-1') : substr($string, $start, $length);
     }
 
-    public static function warn($msg)
-    {
+    public static function warn($msg) {
         if (class_exists('Yii')) {
             /** @noinspection PhpUndefinedClassInspection */
             Yii::log($msg, 'warning', 'security');
@@ -65,8 +57,7 @@ class Randomness
      *
      * @return string of 64 pseudo random bytes
      */
-    public static function pseudoRanBlock($warn = true)
-    {
+    public static function pseudoRanBlock($warn = true) {
         if ($warn) {
             self::warn('Using ' . get_class() . '::pseudoRanBlock non-ctypto_strong bytes');
         }
@@ -110,8 +101,7 @@ class Randomness
      *
      * @return string 20-byte random binary string or false on error
      */
-    public static function sessionBlock()
-    {
+    public static function sessionBlock() {
         // session.entropy_length must be set for session_id be crypto-strong
         ini_set('session.entropy_length', 20);
         if (ini_get('session.entropy_length') != 20) {
@@ -142,8 +132,7 @@ class Randomness
      *
      * @return string|bool The random binary string or false on failure
      */
-    public static function randomBytes($length = 8, $cryptoStrong = true, $http = false)
-    {
+    public static function randomBytes($length = 8, $cryptoStrong = true, $http = false) {
         /**
          * @var string The string of random bytes to return
          */
@@ -155,9 +144,9 @@ class Randomness
             // openssl_random_pseudo_bytes() can return non-crypto-strong result but warns
             // when it does. Since crypto-strong is required discard result if it warns.
             if (function_exists('openssl_random_pseudo_bytes')
-                && false !== ($s = openssl_random_pseudo_bytes($length, $safe))
-                && $safe
-                && self::strlen($s) >= $length
+                    && false !== ($s = openssl_random_pseudo_bytes($length, $safe))
+                    && $safe
+                    && self::strlen($s) >= $length
             ) {
                 return self::substr($s, 0, $length);
             }
@@ -165,18 +154,18 @@ class Randomness
             // mcrypt_create_iv() with MCRYPT_RAND is not crypto-strong. With MCRYPT_DEV_URANDOM
             // it can (on Linux) return non-crypto-strong result without warning, so don't use that.
             if (function_exists('mcrypt_create_iv')
-                && false !== ($s = mcrypt_create_iv($length, MCRYPT_DEV_RANDOM))
-                && self::strlen($s) >= $length
+                    && false !== ($s = mcrypt_create_iv($length, MCRYPT_DEV_RANDOM))
+                    && self::strlen($s) >= $length
             ) {
                 return self::substr($s, 0, $length);
             }
 
             // Try /dev/random directly. On Linux it may block so deal with that.
             if (false !== ($f = @fopen('/dev/random', 'r'))
-                && stream_set_blocking($f, 0)
-                && false !== ($s = @fread($f, $length))
-                && (fclose($f) || true)
-                && self::strlen($s) >= $length
+                    && stream_set_blocking($f, 0)
+                    && false !== ($s = @fread($f, $length))
+                    && (fclose($f) || true)
+                    && self::strlen($s) >= $length
             ) {
                 return self::substr($s, 0, $length);
             }
@@ -184,9 +173,9 @@ class Randomness
             // Try (three times max) stealing entropy from the session manager.
             $i = 0;
             while (
-                self::strlen($s) < $length
-                && false !== ($r = self::sessionBlock())
-                && ++$i < 3
+            self::strlen($s) < $length
+            && false !== ($r = self::sessionBlock())
+            && ++$i < 3
             ) {
                 $s .= $r;
             }
@@ -196,11 +185,11 @@ class Randomness
 
             // Try http://random.org
             if (self::strlen($s) < $length
-                && $http
-                && false !== ($r = @file_get_contents(
-                    'http://www.random.org/cgi-bin/randbyte?format=f&nbytes=' . $length
-                ))
-                && self::strlen($s .= $r) >= $length
+                    && $http
+                    && false !== ($r = @file_get_contents(
+                            'http://www.random.org/cgi-bin/randbyte?format=f&nbytes=' . $length
+                    ))
+                    && self::strlen($s .= $r) >= $length
             ) {
                 return self::substr($s, 0, $length);
             }
@@ -219,8 +208,7 @@ class Randomness
 
     private $entropy = '';
 
-    public function bufferedBytes($n, $cryptoStrong = true)
-    {
+    public function bufferedBytes($n, $cryptoStrong = true) {
         if (self::strlen($this->entropy) < $n) {
             $this->entropy .= self::randomBytes(64, $cryptoStrong);
         }
@@ -229,8 +217,7 @@ class Randomness
         return $return;
     }
 
-    public function randInt($max, $cryptoStrong = true)
-    {
+    public function randInt($max, $cryptoStrong = true) {
         if ($max > 2147483647) {
             throw new Exception(__CLASS__ . '::' . __METHOD__ . ' max parameter too big');
         }
@@ -257,14 +244,12 @@ class Randomness
      *
      * @return string salt starting $2a$
      */
-    public static function blowfishSalt($cost = 10, $cryptoStrong = false)
-    {
+    public static function blowfishSalt($cost = 10, $cryptoStrong = false) {
         return
-            '$2a$' . str_pad($cost, 2, '0', STR_PAD_RIGHT) . '$'
-            . strtr(
-                substr(base64_encode(self::randomBytes(18, $cryptoStrong)), 0, 24),
-                array('+' => '.')
-            );
+                '$2a$' . str_pad($cost, 2, '0', STR_PAD_RIGHT) . '$'
+                . strtr(
+                        substr(base64_encode(self::randomBytes(18, $cryptoStrong)), 0, 24), array('+' => '.')
+        );
     }
 
     /**
@@ -277,15 +262,12 @@ class Randomness
      *
      * @return string the random string
      */
-    public static function randomString($length = 8, $cryptoStrong = true)
-    {
+    public static function randomString($length = 8, $cryptoStrong = true) {
         return strtr(
-            self::substr(
-                base64_encode(self::randomBytes($length + 2, $cryptoStrong)),
-                0,
-                $length
-            ),
-            array('+' => '_', '/' => '~')
+                        self::substr(
+                                base64_encode(self::randomBytes($length + 2, $cryptoStrong)), 0, $length
+                        ), array('+' => '_', '/' => '~')
         );
     }
+
 }

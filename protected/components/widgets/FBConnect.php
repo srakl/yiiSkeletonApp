@@ -59,7 +59,7 @@ class FBConnect extends CWidget {
                                         if(data.error == 0){
                                             window.location.href = data.success;
                                         } else {
-                                            alert(data.error);
+                                            showError(data.error);
                                             $("#{$this->fbLoginButtonId}").button("reset");
                                         }
                                     }

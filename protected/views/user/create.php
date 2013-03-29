@@ -2,11 +2,17 @@
 /* @var $this UserController */
 /* @var $model User */
 
+$this->pageTitle = app()->name . ' - Register';
 $this->breadcrumbs = array(
     'Register',
 );
 
-$this->menu = array(array('label' => 'List Users', 'url' => array('index')),);
+$this->menu = array(
+    array(
+        'label' => 'List Users',
+        'url' => array('index')
+    )
+);
 ?>
 
 <h1>Register User</h1>

@@ -1,4 +1,6 @@
 <?php
+
+$this->pageTitle = app()->name . ' - Forgot Password';
 $this->breadcrumbs = array(
     'Login' => array('/site/login'),
     'Forgot Password',
@@ -7,39 +9,42 @@ $this->breadcrumbs = array(
 
 <h1>Forgot Password</h1>
 
-<div class="form">
-    <?php
-    $form = $this->beginWidget('CActiveForm', array(
-        'id' => 'user-form',
-        'htmlOptions' => array('class' => 'reset'),
-        'focus' => array($model, 'email'),
-            ));
-    ?>
-    <?php if ($model->isNewRecord): ?>                    
-        <p>Please provide your email address in the field below to reset your password.</p>
+<p>Please provide your email address in the field below to reset your password.</p>
 
-        <?php echo $form->errorSummary($model); ?>
+<?php if ($model->isNewRecord): ?>
 
-        <div class="row">
-            <?php echo $form->textField($model, 'email', array('autocomplete' => 'off', 'placeholder' => 'email address')); ?>
-        </div>
+<?php
+$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+    'id' => 'user-form',
+    'type' => 'horizontal',
+    'focus' => array($model, 'email'),
+));
+?>
 
-        <?php echo CHtml::hiddenField('ajax', '0'); ?>
+<?php //echo $form->errorSummary($model); ?>
 
-        <div class="row buttons">
-            <?php
-            $this->widget('bootstrap.widgets.TbButton', array(
-                'buttonType' => 'submit',
-                'label' => 'Request Reset',
-                'icon' => 'icon-envelope',
-            ));
-            ?>
-        </div>
+<fieldset>
 
-    <?php else: ?>
-        <p>Password reset request is instantiated. In the future, this will send an email to the users email address with the reset link. For now, <a href="<?php echo url('user/newPassword') . '?req=' . $hash; ?>">click here</a>. This link is valid for 24 hours only.</p>
-    <?php
-    endif;
-    $this->endWidget();
-    ?>
+<?php echo $form->textFieldRow($model, 'email', array('autocomplete' => 'off', 'placeholder' => 'email address')); ?>
+
+<?php echo CHtml::hiddenField('ajax', '0'); ?>
+    
+</fieldset>
+
+<div class="form-actions">
+    <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'icon' => 'icon-envelope', 'label'=>'Request Reset')); ?>
 </div>
+
+<?php $this->endWidget(); ?>
+
+<?php else: ?>
+
+    <?php app()->user->setFlash('info', '<strong>Password Reset Instantiated:</strong> In the future, this will send an email to the users email address with the reset link. For now, <a href="'.url('user/newPassword') . '?req=' . $hash.'">click here</a>. This link is valid for 24 hours only.'); ?>
+
+    <?php $this->widget('bootstrap.widgets.TbAlert', array(
+        'block' => true,
+        'fade' => true,
+        'closeText' => '&times;',
+    ));
+    ?>
+<?php endif; ?>
