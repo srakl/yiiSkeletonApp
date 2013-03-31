@@ -4,6 +4,8 @@ This is a generic Yii Framework application with MySQL integration. I built this
 
 This skeleton application does not include the Yii Framework itself. Download it [here](https://github.com/yiisoft/yii/).
 
+([Click Here to see the demo.](http://www.travisstroud.co.uk/yiiSkeletonApp/))
+
 ## Extensions
 I've included some extensions that I pretty much always use. These include:
 * Twitter Bootstrap ([Yii Bootstrap](http://www.cniska.net/yii-bootstrap/))
