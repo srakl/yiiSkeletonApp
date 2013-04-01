@@ -29,6 +29,7 @@ class User extends CActiveRecord {
     public $pass1;
     public $pass2;
     public $old_password;
+    public $verify;
 
     /**
      * Returns the static model of the specified AR class.
@@ -61,6 +62,7 @@ class User extends CActiveRecord {
             array('pass1, pass2', 'application.components.validate.EPasswordStrength', 'on' => 'resetPass, changePassword'),
             array('password, pass2', 'required', 'on' => 'register'),
             array('pass2', 'compare', 'compareAttribute' => 'password', 'on' => 'register'),
+            array('verify', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()),
             array('admin, email_verified, login_disabled', 'numerical', 'integerOnly' => true),
             array('email, password', 'length', 'max' => 63),
             array('address', 'length', 'max' => 511),
@@ -113,6 +115,7 @@ class User extends CActiveRecord {
             'pass1' => 'New Password',
             'pass2' => 'Confirm Password',
             'old_password' => 'Current Password',
+            'verify' => 'Validate',
         );
     }
 

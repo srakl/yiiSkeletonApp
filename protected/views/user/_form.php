@@ -14,7 +14,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
 <p>Fields with <span class="required">*</span> are required.</p>
 
-<?php echo $form->errorSummary($model); ?>
+<?php //echo $form->errorSummary($model); ?>
 
 <fieldset>
 
@@ -29,6 +29,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     <?php echo $form->textFieldRow($model, 'phone', array('size' => 12, 'maxlength' => 12)); ?>
 
     <?php if(!$model->isNewRecord): ?>
+    
         <?php
         $this->widget('bootstrap.widgets.TbButton', array(
             'label' => 'Change Password',
@@ -42,6 +43,15 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         <?php echo $form->passwordFieldRow($model, 'password', array('size' => 60, 'maxlength' => 63)); ?>
 
         <?php echo $form->passwordFieldRow($model, 'pass2', array('size' => 60, 'maxlength' => 63)); ?>
+
+        <div class="control-group ">
+            <?php echo CHtml::activeLabel($model, 'verify', array('required' => true, 'class' => 'control-label')); ?>
+            <div class="controls">
+                <?php echo $form->textField($model, 'verify', array('class' => 'input-small')); ?>
+                <?php $this->widget('CCaptcha', array('clickableImage' => true, 'showRefreshButton' => false, 'imageOptions' => array('style' => 'vertical-align: top; margin-top: -10px; cursor: pointer;'))); ?>
+                <?php echo $form->error($model, 'verify'); ?>
+            </div>
+        </div>
 
     <?php endif; ?>
 

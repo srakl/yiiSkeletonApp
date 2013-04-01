@@ -1,49 +1,60 @@
 <?php
 /* @var $this UserController */
 /* @var $model User */
+
+if($model->id===app()->user->id){
+    $breadcrumbs = array(
+        'Profile' => array('/user/update', 'id' => app()->user->id),
+        'Change Password'
+    );
+} else {
+    $breadcrumbs = array(
+        'Users' => array('/user/index'),
+        $model->email => array('/user/update', 'id' => $model->id),
+        'Change Password'
+    );
+}
+
+$this->layout = app()->user->isAdmin()?'column2':'';
+$this->pageTitle = app()->name . ' - Change Password';
+$this->breadcrumbs = $breadcrumbs;
+
+$this->menu=array(
+	array('label'=>'List User', 'url'=>array('index')),
+	array('label'=>'Create User', 'url'=>array('register')),
+);
 ?>
 
 <h1>Change User <?php echo $model->id; ?> Password</h1>
 
-<div class="form">
+<p>Fields with <span class="required">*</span> are required.</p>
 
     <?php
-    $form = $this->beginWidget('CActiveForm', array(
-        'id' => 'user-form',
+    $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+        'id' => 'changePass-form',
+        'type' => 'horizontal',
         'enableAjaxValidation' => false,
-            ));
+    ));
     ?>
-
-    <p class="note">Fields with <span class="required">*</span> are required.</p>
 
     <?php echo $form->errorSummary($model); ?>
 
-    <?php if(!app()->user->isAdmin()): ?>
-    <div class="row">
-        <?php echo $form->labelEx($model, 'old_password'); ?>
-        <?php echo $form->passwordField($model, 'old_password', array('size' => 60, 'maxlength' => 63)); ?>
-        <?php echo $form->error($model, 'old_password'); ?>
-    </div>
-    <?php endif; ?>
-    
-    <div class="row">
-        <?php echo $form->labelEx($model, 'pass1'); ?>
-        <?php echo $form->passwordField($model, 'pass1', array('size' => 60, 'maxlength' => 63)); ?>
-        <?php echo $form->error($model, 'pass1'); ?>
-    </div>
-    
-    <div class="row">
-        <?php echo $form->labelEx($model, 'pass2'); ?>
-        <?php echo $form->passwordField($model, 'pass2', array('size' => 60, 'maxlength' => 63)); ?>
-        <?php echo $form->error($model, 'pass2'); ?>
-    </div>
-    
-    <div class="row buttons">
-        <?php $this->widget('bootstrap.widgets.TbButton', array(
-            'buttonType' => 'submit',
-            'label' => 'Change Password',
-        )); ?>
+    <fieldset>
+
+        <?php if(!app()->user->isAdmin()): ?>
+
+            <?php echo $form->passwordFieldRow($model, 'old_password', array('size' => 60, 'maxlength' => 63)); ?>
+
+        <?php endif; ?>
+
+        <?php echo $form->passwordFieldRow($model, 'pass1', array('size' => 60, 'maxlength' => 63)); ?>
+
+        <?php echo $form->passwordFieldRow($model, 'pass2', array('size' => 60, 'maxlength' => 63)); ?>
+
+    </fieldset>
+
+    <div class="form-actions">
+        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Change Password')); ?>
     </div>
     
     <?php $this->endWidget(); ?>
-</div>

@@ -2,13 +2,15 @@
 /* @var $this UserController */
 /* @var $dataProvider CActiveDataProvider */
 
+$this->layout = 'column2';
+$this->pageTitle = app()->name . ' - Users';
 $this->breadcrumbs = array(
     'Users',
 );
 
 $this->menu = array(
-    array('label' => 'Create User', 'url' => array('create')),
-        //array('label'=>'Manage User', 'url'=>array('admin')),
+    array('label'=>'List User', 'url'=>array('index'), 'active' => true),
+    array('label' => 'Create User', 'url' => array('register')),
 );
 
 $columns = array(
@@ -27,11 +29,13 @@ if (app()->user->isAdmin()) {
 }
 
 $dataArray = array(
+    'type' => 'striped bordered condensed',
     'dataProvider' => $dataProvider,
+    'template' => "{items}",
     'columns' => $columns,
 );
 ?>
 
 <h1>Users</h1>
 
-<?php $this->widget('zii.widgets.grid.CGridView', $dataArray); ?>
+<?php $this->widget('bootstrap.widgets.TbGridView', $dataArray); ?>

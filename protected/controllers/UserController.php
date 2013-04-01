@@ -1,7 +1,6 @@
 <?php
 
 class UserController extends Controller {
-
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
      * using two-column layout. See 'protected/views/layouts/column2.php'.
@@ -20,6 +19,17 @@ class UserController extends Controller {
       }
      * 
      */
+
+    public function actions() {
+        return array(
+            // captcha action renders the CAPTCHA image displayed on the contact page
+            'captcha' => array(
+                'class' => 'CCaptchaAction',
+                'backColor' => 0xFFFFFF,
+                'foreColor'=>0x333333,
+            ),
+        );
+    }
 
     /**
      * Lists all models.
