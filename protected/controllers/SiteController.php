@@ -46,23 +46,40 @@ class SiteController extends Controller {
      * Displays the login page
      */
     public function actionLogin() {
-        $model = new LoginForm;
+        if(app()->user->isGuest()){
+            $model = new LoginForm;
 
-        // if it is ajax validation request
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
-            echo CActiveForm::validate($model);
-            app()->end();
-        }
+            // if it is ajax validation request
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
+                echo CActiveForm::validate($model);
+                app()->end();
+            }
 
-        // collect user input data
-        if (isset($_POST['LoginForm'])) {
-            $model->attributes = $_POST['LoginForm'];
-            // validate user input and redirect to the previous page if valid
-            if ($model->validate() && $model->login())
-                $this->redirect(app()->user->returnUrl);
+            // collect user input data
+            if (isset($_POST['LoginForm'])) {
+                $model->attributes = $_POST['LoginForm'];
+                // validate user input and redirect to the previous page if valid
+                if ($model->validate() && $model->login()) {
+                    $user = app()->user->getUser();
+                    User::model()->updateByPk($user->id, array('last_login' => new CDbExpression('NOW()')));
+                    if (isset($_POST['ajax'])) {
+                        echo app()->user->getHomeUrl();
+                        app()->end();
+                    } else {
+                        $this->redirect(app()->user->returnUrl);
+                    }
+                } else {
+                    if (isset($_POST['ajax'])) {
+                        echo "bad";
+                        app()->end();
+                    }
+                }
+            }
+            // display the login form
+            $this->render('login', array('model' => $model));
+        } else {
+            $this->redirect(array('/user/update', 'id' => app()->user->id));
         }
-        // display the login form
-        $this->render('login', array('model' => $model));
     }
 
     /**
