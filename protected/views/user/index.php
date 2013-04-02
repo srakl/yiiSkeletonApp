@@ -18,7 +18,7 @@ $columns = array(
     array('name' => 'first_name', 'header' => 'Name', 'type' => 'raw', 'value' => 'User::model()->findByPk($data->id)->getFullName()'),
     array('name' => 'email', 'header' => 'Email'),
     array('name' => 'phone', 'header' => 'Phone', 'type' => 'raw', 'value' => 'Shared::formatPhone($data->phone)'),
-    array('name' => 'last_login', 'header' => 'Last Login', 'type' => 'raw', 'value' => 'Shared::formatDateShort($data->last_login)'),
+    array('name' => 'last_login', 'header' => 'Last Login', 'type' => 'raw', 'value' => 'Shared::formatShortUSDate($data->last_login)'),
 );
 
 if (app()->user->isAdmin()) {

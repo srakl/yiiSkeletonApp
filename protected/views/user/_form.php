@@ -61,7 +61,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     
     <div class="alert alert-info">
         <h4>Notice</h4>
-        A random password will be generated and sent to the email specified.
+        A random password will be generated and sent to the email specified along with an account activation link.
     </div>
     
     <?php endif; ?>
@@ -70,9 +70,9 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
     <?php if(app()->user->isAdmin()): // Create OR Edit a record as admin (extra options availible) ?>
 
-        <?php echo $form->checkBoxRow($model, 'admin'); ?>
+        <?php if(app()->user->id !== $model->id): // admin cannot take privileges from themselves ?>
 
-        <?php if(app()->user->getUser()->id !== $model->id): ?>
+            <?php echo $form->checkBoxRow($model, 'admin'); ?>
 
             <?php echo $form->checkBoxRow($model, 'login_disabled'); ?>
 

@@ -10,14 +10,11 @@ class Shared extends CApplicationComponent {
     const month = 2678400; // 31 days
     const year = 31536000; // 365 days
 
-    // PHP mailer cache
-
-    public static $mailer;
     // file handler for debug file
     static $fh;
 
     /**
-     * Timezones in USA only ... until we expand to europe
+     * Timezones
      * @var type 
      */
     static $timezones = array(
@@ -61,14 +58,6 @@ class Shared extends CApplicationComponent {
             $output .= $object;
         }
 
-        /* if (is_object(Yii::app()->user)) {
-          if (Yii::app()->user->hasFlash('debug')) {
-          Yii::app()->user->setFlash('debug', Yii::app()->user->getFlash('debug') . "<br />" . $output);
-          } else {
-          Yii::app()->user->setFlash('debug', $output);
-          }
-          } */
-
         // write it to the file
         $path = YiiBase::getPathOfAlias('application.runtime');
         $debugFile = $path . "/debug.txt";
@@ -93,62 +82,11 @@ class Shared extends CApplicationComponent {
     }
 
     /**
-     * Initiate the mailer component. It is singleton
-     * @return type 
-     */
-    private static function getMailer() {
-        if (self::$mailer == null) {
-            Yii::import('ext.phpmailer.PHPMailer');
-            self::$mailer = new PHPMailer();
-            self::$mailer->IsSes();
-            self::$mailer->Port = Yii::app()->params['email']['smtpPort'];
-            self::$mailer->Host = Yii::app()->params['email']['smtpHost'];
-            self::$mailer->SMTPAuth = true;
-            self::$mailer->SMTPSecure = 'tls';
-            self::$mailer->Port = 25;
-            self::$mailer->Username = Yii::app()->params['email']['smtpUser'];
-            self::$mailer->Password = Yii::app()->params['email']['smtpPassword'];
-        }
-        return self::$mailer;
-    }
-
-    /**
-     * Display success banner. Banner is displayed even though page is redirected to new view.
-     * @param <type> $message
-     */
-    public static function success($message = '') {
-
-        if (!Yii::app()->params['cron']) {
-            if (Yii::app()->user->hasFlash('success')) {
-                Yii::app()->user->setFlash('success', Yii::app()->user->getFlash('success') . "<br />" . $message);
-            } else {
-                Yii::app()->user->setFlash('success', $message);
-            }
-        }
-    }
-
-    /**
      * Store errors produced in another form
      * @param <type> $errors
      */
     public static function setFormErrors($errors) {
         self::$formErrors = $errors;
-    }
-
-    /**
-     * Display error message. Banner is displayed even though page is redirected to new view.
-     * You can display multiple error messages inside one window.
-     * @param <type> $message
-     */
-    public static function error($message = '') {
-
-        if (!Yii::app()->params['cron']) {
-            if (Yii::app()->user->hasFlash('error')) {
-                Yii::app()->user->setFlash('error', Yii::app()->user->getFlash('error') . "<br />" . $message);
-            } else {
-                Yii::app()->user->setFlash('error', $message);
-            }
-        }
     }
 
     /**
@@ -329,27 +267,6 @@ class Shared extends CApplicationComponent {
         return $formatted;
     }
 
-    /* public function formatDatePicker($date) {
-      $time = self::toTimestamp($date);
-      $formatted = date('Y-m-d', $time);
-      return $formatted;
-      }
-
-      public function formatDateTimePicker($date) {
-      $time = self::toTimestamp($date);
-      $formatted = date('Y-m-d H:i', $time);
-      return $formatted;
-      }
-
-      public function formatDatePickerArr($date) {
-      $time = self::toTimestamp($date);
-      $formatted = array();
-      $formatted['date'] = date('Y-m-d', $time);
-      $formatted['hour'] = date('h', $time);
-      $formatted['minute'] = date('i', $time);
-      return $formatted;
-      } */
-
     public static function timeNow() {
         return self::toDatabase(time());
     }
@@ -439,88 +356,6 @@ class Shared extends CApplicationComponent {
     }
 
     /**
-     * Send html email to one single recipient
-     * @param <string> $subject
-     * @param <string> $body text or html message
-     * @param <string> $toEmail recipient email address
-     * @param <string> $toName recipient name (will be displayed in To: like "Name LastName <myEmail>"
-     * @param <string> $fromEmail who sends the email ... default is client admin, but can be anyone from the client company
-     * @param <string> $fromName full name of the sender, will be displayed in users email client
-     * @param <boolean> $html is it HTML email body?
-     */
-    public static function sendEmail($subject, $body, $toEmail, $toName = null, $fromEmail = null, $fromName = null, $html = true, $attachment = null) {
-        //Yii::import('application.extensions.phpmailer.JPhpMailer');
-        $mail = self::getMailer();
-
-        Shared::debug("sending email");
-        if ($fromEmail == null || !self::isEmailValid($fromEmail)) {
-            $fromEmail = Yii::app()->params['email']['noReplySender'];
-            $fromName = Yii::app()->params['email']['senderName'];
-        }
-        // make sure the sender name is correct
-        if ($fromName != null) {
-            $fromName = preg_replace("/[^A-Za-z0-9-_ ]/", '', $fromName);
-        }
-
-        // there is an email subject placeholder inside, lets replace it here
-        /* Vk Commented if (strstr($body, '[email_subject]')){
-          $body = str_replace('[email_subject]', $subject, $body);
-          } */
-
-        $mail->SetFrom($fromEmail, CHtml::encode($fromName));
-        $mail->Subject = CHtml::encode($subject);
-
-        // send this if client doesn't support html
-        if ($html) {
-            //$mail->AltBody = self::stripTags($body);
-            $mail->MsgHTML($body);
-        } else {
-            $mail->MsgHTML(strip_tags($body));
-            $mail->IsHTML(false);
-        }
-        if (is_array($toEmail)) {
-            foreach ($toEmail as $emailRecipient) {
-                if (self::isEmailValid($emailRecipient))
-                    if (self::isEmailValid($emailRecipient))
-                        $mail->AddAddress($emailRecipient);
-            }
-        }else {
-
-            $mail->AddAddress($toEmail, $toName);
-        }
-
-
-
-        // debug
-        Shared::debug("
-                    Message title: $subject<br />
-                    From: $fromEmail ($fromName)<br />
-                    To: $toEmail ($toName)\n<br />
-                    ", 'email headers', 'email.txt');
-        Shared::debug($body, 'email body', 'email.txt');
-        if ($attachment != null) {
-            $mail->AddAttachment($attachment);
-        }
-
-        if (false) {
-            self::debug("test is on");
-            // do not send emails on testing server
-            if (Yii::app()->params['email']['testEmail']) {
-                // send the email anyway
-                self::debug("sending testing email");
-                $mail->ClearAllRecipients();
-                $mail->addAddress('cool.ece.friend@gmail.com', 'Developer');
-                $mail->SetFrom('ausaoffers@gmail.com', 'AO Test');
-                return $mail->Send();
-            }
-            return true;
-        } else {
-            //Shared::debug($mail);
-            return $mail->Send();
-        }
-    }
-
-    /**
      * Strip tags from HTML emails, including header and keeps links inside.
      * Returns formated plain text version of HTML email
      */
@@ -575,7 +410,7 @@ class Shared extends CApplicationComponent {
      * @return <type> 
      */
     public static function removeDiacritics($string) {
-        $search = explode(",", "ç,æ,œ,á,é,í,ó,ú,à,è,ì,ò,ù,ä,ë,ï,ö,ü,ÿ,â,ê,î,ô,û,å,e,i,ø,u,ř,ý,�?,ň,");
+        $search = explode(",", "ç,æ,œ,á,é,í,ó,ú,à,è,ì,ò,ù,ä,ë,ï,ö,ü,ÿ,â,ê,î,ô,û,å,e,i,ø,u,ř,ý,�?,ň,");
         $replace = explode(",", "c,ae,oe,a,e,i,o,u,a,e,i,o,u,a,e,i,o,u,y,a,e,i,o,u,a,e,i,o,u,r,y,c,n");
         return str_replace($search, $replace, $string);
     }
@@ -595,39 +430,13 @@ class Shared extends CApplicationComponent {
     }
 
     /**
-     * Check that DNS MX record exists for a given domain
+     * Check that email is email
      */
     public static function isEmailValid($email) {
         if (!preg_match("/^[_a-zA-Z0-9-_]+(\.[_a-zA-Z0-9-_]+)*@[a-zA-Z0-9-_]+(\.[a-zA-Z0-9-_]+)*(\.[a-zA-Z]{2,3})$/", $email)) {
             return false;
         }
         return true;
-        // not sure if the following one works
-        /*
-          list($userid, $domain) = explode("@", $email);
-
-          // just most common ones to speed up lookup
-          $validDomains = array(
-          "gmail.com" => true,
-          "ausatest.com" => true, // domain used for unit tests
-          "us.army.mil" => true,
-          "yahoo.com" => true,
-          "hotmail.com" => true,
-          "aol.com" => true,
-          "msn.com" => true,
-          "miners.utep.edu" => true,
-          "utep.edu" => true
-          );
-          if (isset($validDomains[$domain])) {
-          return true;
-          }
-
-          // check its DNS record
-          if (checkdnsrr($domain, "MX")) {
-          return true;
-          } else {
-          return false;
-          } */
     }
 
     /**
@@ -638,20 +447,6 @@ class Shared extends CApplicationComponent {
     public static function urlize($string) {
         return preg_replace("/[^a-z0-9-_]/", '', str_replace(" ", "-", strtolower($string)));
     }
-
-    /**
-     * Renders a png image inside images folder
-     * @param type $file 
-     */
-    /* public static function renderImageFromFile($file){
-      $path = YiiBase::getPathOfAlias('webroot.images') . '/' . $file;
-      header("Content-type: image/png");
-      header("Content-Disposition: inline; filename=" . $file);
-      header("Pragma: public");
-      header("Expires: 0");
-      header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-      readfile($path);
-      } */
 
     /**
      * Make sure there are no line breaks and special characters in the text

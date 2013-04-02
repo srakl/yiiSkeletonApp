@@ -172,11 +172,14 @@ class User extends CActiveRecord {
             $model = new User;
             $model->attributes = $input;
 
-            // create new one if nothing is provided (due to rules, this should not happen even for admins)
             if (strlen($model->password) == 0) {
+                // create new one if nothing is provided (only applies to admins creating new users)
                 $password = Shared::generateMnemonicPassword(8);
+                $model->password = crypt($password, Randomness::blowfishSalt());
+                $model->pass1 = $password;
+            } else {
+                $model->password = crypt($password, Randomness::blowfishSalt());
             }
-            $model->password = crypt($input['password'], Randomness::blowfishSalt());
             $model->email = strtolower($model->email);
         }
         return $model;

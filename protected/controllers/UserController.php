@@ -1,11 +1,6 @@
 <?php
 
 class UserController extends Controller {
-    /**
-     * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-     * using two-column layout. See 'protected/views/layouts/column2.php'.
-     */
-    //public $layout = '//layouts/column2';
 
     /**
      * @return array action filters
@@ -92,7 +87,7 @@ class UserController extends Controller {
     }
     
     public function actionCreate() {
-        if(app()->user->isAdmin()){
+        if(app()->user->isAdmin()){ // change this to filter() later (dont forget!)
             $model = new User('create');
             
             if (isset($_POST['User'])) {
@@ -100,10 +95,23 @@ class UserController extends Controller {
                 if ($model->validate()) {
                     $model = User::create($_POST['User']);
                     $model->activate = User::encrypt(microtime() . $model->password);
-                    
-                    Shared::debug($model);
-                    // generate a password for this user
-                    //$model->save();
+
+                    $mail = new Mailer('user', array('password' => $model->pass1, 'activate' => $model->activate));
+                    $mail->render();
+                    $mail->From = app()->params['adminEmail'];
+                    $mail->FromName = 'Yii Skeleton App Mailer';
+                    $mail->Subject = 'Your Yii Skeleton App Account';
+                    $mail->AddAddress($model->email);
+                    Shared::debug($mail);
+                    if ($mail->Send()) {
+                        $model->save(); // only save if an email is sent
+                        $mail->ClearAddresses();
+                        app()->user->setFlash('success','Thank you for contacting us. We will respond to you as soon as possible.');
+                        $this->redirect(array('/user/index'));
+                    } else {
+                        app()->user->setFlash('error','Error while sending email: '.$mail->ErrorInfo);
+                        $this->refresh();
+                    }
                 }
             }
             $this->render('create', array('model' => $model));
