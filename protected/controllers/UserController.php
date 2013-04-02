@@ -69,22 +69,47 @@ class UserController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionRegister() {
-        $model = new User('register');
-        //$this->performAjaxValidation($model);
-        if (isset($_POST['User'])) {
-            $model->attributes = $_POST['User'];
-            if ($model->validate()) {
-                $model = User::create($_POST['User']);
-                $model->activate = User::encrypt(microtime() . $model->password);
+        if(!app()->user->isAdmin()){
+            $model = new User('register');
+            //$this->performAjaxValidation($model);
+            if (isset($_POST['User'])) {
+                $model->attributes = $_POST['User'];
+                if ($model->validate()) {
+                    $model = User::create($_POST['User']);
+                    $model->activate = User::encrypt(microtime() . $model->password);
 
-                // send the user an activation link email (later)
-                $model->save();
-                app()->user->setFlash('success', 'Registration successful. Check your email.');
-                $this->redirect(app()->user->getHomeUrl());
+                    // send the user an activation link email (later)
+                    $model->save();
+                    app()->user->setFlash('success', 'Registration successful. Check your email.');
+                    $this->redirect(app()->user->getHomeUrl());
+                }
             }
+            // render the create form
+            $this->render('create', array('model' => $model));
+        } else {
+            $this->redirect(array('/user/create'));
         }
-        // render the create form
-        $this->render('create', array('model' => $model));
+    }
+    
+    public function actionCreate() {
+        if(app()->user->isAdmin()){
+            $model = new User('create');
+            
+            if (isset($_POST['User'])) {
+                $model->attributes = $_POST['User'];
+                if ($model->validate()) {
+                    $model = User::create($_POST['User']);
+                    $model->activate = User::encrypt(microtime() . $model->password);
+                    
+                    Shared::debug($model);
+                    // generate a password for this user
+                    //$model->save();
+                }
+            }
+            $this->render('create', array('model' => $model));
+        } else {
+            $this->redirect(array('/user/register'));
+        }
     }
 
     /**
@@ -153,36 +178,42 @@ class UserController extends Controller {
      * Request a password reset.
      */
     public function actionForgotPassword() {
-        $model = new User('passwordReset');
-        $hash = ''; // temporary until emails are set up
-        //$this->performAjaxValidation($model);
-        if (isset($_POST['User'])) {
-            $model->attributes = $_POST['User'];
-            if ($model->validate()) {
-                // find the correct user
-                $model = User::model()->findByEmail($_POST['User']['email']);
-                // generate the md5 hash
-                $timestamp = time();
-                $hash = md5($model->email . $model->password . $timestamp);
-                $model->password_reset = $timestamp;
-                // save the hash to the users table row
-                $model->save();
-                // email the user their reset link
-                /*
-                  $mail = new AOEmail('resetPassword');
-                  $mail->addPlaceholders(array(
-                  'email' => $model->email_address,
-                  'full_name' => $model->getFullName(),
-                  'reset_link' => absUrl('/user/newPassword', array('req' => $hash))));
-                  $mail->addRecipient($model->email_address, $model->getFullName());
-                  $mail->send();
-                 */
+        if(app()->user->isGuest()){
+            $model = new User('passwordReset');
+            $model->setScenario('forgotPassword');
+            $hash = ''; // temporary until emails are set up
+            //$this->performAjaxValidation($model);
+            if (isset($_POST['User'])) {
+                $model->attributes = $_POST['User'];
+                if ($model->validate()) {
+                    // find the correct user
+                    $model = User::model()->findByEmail($_POST['User']['email']);
+                    // generate the md5 hash
+                    $timestamp = time();
+                    $hash = md5($model->email . $model->password . $timestamp);
+                    $model->password_reset = $timestamp;
+                    // save the hash to the users table row
+                    $model->save();
+                    // email the user their reset link
+                    /*
+                      $mail = new Email('resetPassword');
+                      $mail->addPlaceholders(array(
+                      'email' => $model->email_address,
+                      'full_name' => $model->getFullName(),
+                      'reset_link' => absUrl('/user/newPassword', array('req' => $hash))));
+                      $mail->addRecipient($model->email_address, $model->getFullName());
+                      $mail->send();
+                     */
+                }
             }
+            $this->render('forgot_password', array(
+                'model' => $model,
+                'hash' => $hash, // temporary until emails are set up
+            ));
+        } else {
+            // you are logged in... how did you forget your password?
+            $this->redirect(array('/user/password', 'id' => app()->user->id));
         }
-        $this->render('forgot_password', array(
-            'model' => $model,
-            'hash' => $hash, // temporary until emails are set up
-        ));
     }
 
     /**

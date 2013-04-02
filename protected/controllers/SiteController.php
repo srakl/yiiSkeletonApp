@@ -72,6 +72,8 @@ class SiteController extends Controller {
                     if (isset($_POST['ajax'])) {
                         echo "bad";
                         app()->end();
+                    } else {
+                        app()->user->setFlash('error', 'Login failed. Please try again.');
                     }
                 }
             }
