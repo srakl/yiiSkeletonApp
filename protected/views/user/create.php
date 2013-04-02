@@ -2,19 +2,23 @@
 /* @var $this UserController */
 /* @var $model User */
 
-$this->pageTitle = app()->name . ' - Register';
-$this->breadcrumbs = array(
-    'Register',
-);
+if(app()->user->isAdmin()){
+    $pageName = 'Create User';
+    $this->layout = 'column2';
+    $this->menu = array(
+        array('label'=>'List User', 'url'=>array('index')),
+        array('label' => 'Create User', 'url' => array('register'), 'active' => true),
+    );
+} else {
+    $pageName = 'Register User';
+}
 
-$this->menu = array(
-    array(
-        'label' => 'List Users',
-        'url' => array('index')
-    )
+$this->pageTitle = app()->name . ' - ' . $pageName;
+$this->breadcrumbs = array(
+    $pageName,
 );
 ?>
 
-<h1>Register User</h1>
+<h1><?php echo $pageName; ?></h1>
 
 <?php echo $this->renderPartial('_form', array('model' => $model)); ?>

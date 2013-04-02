@@ -14,6 +14,11 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
 <p>Fields with <span class="required">*</span> are required.</p>
 
+<?php echo (app()->user->isAdmin()&&$model->isNewRecord?'<div class="alert alert-info">
+        <h4>Notice</h4>
+        A random password will be generated and sent to the email specified along with an account activation link.
+    </div>':''); ?>
+
 <?php //echo $form->errorSummary($model); ?>
 
 <fieldset>
@@ -56,14 +61,8 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                 <?php $this->widget('CCaptcha', array('clickableImage' => true, 'showRefreshButton' => false, 'imageOptions' => array('style' => 'vertical-align: top; margin-top: -10px; cursor: pointer;'))); ?>
                 <?php echo $form->error($model, 'verify'); ?>
             </div>
-        </div>
-    <?php else: ?>
-    
-    <div class="alert alert-info">
-        <h4>Notice</h4>
-        A random password will be generated and sent to the email specified along with an account activation link.
-    </div>
-    
+        </div>  
+
     <?php endif; ?>
 
     <?php endif; ?>

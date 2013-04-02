@@ -25,7 +25,7 @@ $this->menu=array(
 );
 ?>
 
-<h1>Change User <?php echo $model->id; ?> Password</h1>
+<h1>Change <?php echo $model->email; ?> Password</h1>
 
 <p>Fields with <span class="required">*</span> are required.</p>
 
