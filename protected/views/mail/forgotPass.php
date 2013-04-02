@@ -1,0 +1,1 @@
+<p><strong>Reset Code:</strong> <?php print_r($hash); ?></p>

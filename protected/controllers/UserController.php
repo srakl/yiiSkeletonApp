@@ -97,20 +97,21 @@ class UserController extends Controller {
                     $model->activate = User::encrypt(microtime() . $model->password);
 
                     $mail = new Mailer('user', array('password' => $model->pass1, 'activate' => $model->activate));
+                    /**
+                     * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
+                     */
                     $mail->render();
                     $mail->From = app()->params['adminEmail'];
                     $mail->FromName = 'Yii Skeleton App Mailer';
                     $mail->Subject = 'Your Yii Skeleton App Account';
                     $mail->AddAddress($model->email);
-                    Shared::debug($mail);
                     if ($mail->Send()) {
                         $model->save(); // only save if an email is sent
                         $mail->ClearAddresses();
-                        app()->user->setFlash('success','Thank you for contacting us. We will respond to you as soon as possible.');
+                        app()->user->setFlash('success','Account created and details sent to users inbox.');
                         $this->redirect(array('/user/index'));
                     } else {
                         app()->user->setFlash('error','Error while sending email: '.$mail->ErrorInfo);
-                        $this->refresh();
                     }
                 }
             }
@@ -189,7 +190,7 @@ class UserController extends Controller {
         if(app()->user->isGuest()){
             $model = new User('passwordReset');
             $model->setScenario('forgotPassword');
-            $hash = ''; // temporary until emails are set up
+            $hash = '';
             //$this->performAjaxValidation($model);
             if (isset($_POST['User'])) {
                 $model->attributes = $_POST['User'];
@@ -200,24 +201,29 @@ class UserController extends Controller {
                     $timestamp = time();
                     $hash = md5($model->email . $model->password . $timestamp);
                     $model->password_reset = $timestamp;
-                    // save the hash to the users table row
+                    // save the timestamp (password reset is good for 24 hours only)
                     $model->save();
-                    // email the user their reset link
-                    /*
-                      $mail = new Email('resetPassword');
-                      $mail->addPlaceholders(array(
-                      'email' => $model->email_address,
-                      'full_name' => $model->getFullName(),
-                      'reset_link' => absUrl('/user/newPassword', array('req' => $hash))));
-                      $mail->addRecipient($model->email_address, $model->getFullName());
-                      $mail->send();
+                    
+                    $mail = new Mailer('forgotPass', array('hash' => $hash));
+                    /**
+                     * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
                      */
+                    $mail->render();
+                    $mail->From = app()->params['adminEmail'];
+                    $mail->FromName = 'Yii Skeleton App Mailer';
+                    $mail->Subject = 'Yii Skeleton App Password Reset';
+                    $mail->AddAddress($model->email);
+                    if ($mail->Send()) {
+                        $model->save(); // only save if an email is sent
+                        $mail->ClearAddresses();
+                        app()->user->setFlash('success','Please check your email for further instructions.');
+                        $this->redirect(array('/site/index'));
+                    } else {
+                        app()->user->setFlash('error','Error while sending email: '.$mail->ErrorInfo);
+                    }
                 }
             }
-            $this->render('forgot_password', array(
-                'model' => $model,
-                'hash' => $hash, // temporary until emails are set up
-            ));
+            $this->render('forgot_password', array('model' => $model));
         } else {
             // you are logged in... how did you forget your password?
             $this->redirect(array('/user/password', 'id' => app()->user->id));

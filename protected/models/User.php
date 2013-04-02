@@ -55,7 +55,7 @@ class User extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('email', 'required'),
-            array('email', 'exist', 'on' => 'passwordReset'),
+            array('email', 'exist', 'on' => 'forgotPassword'),
             array('old_password, pass1, pass2', 'required', 'on' => 'resetPass, changePassword'),
             array('old_password', 'application.components.validate.ECurrentPassword', 'on' => 'changePassword'),
             array('pass2', 'compare', 'compareAttribute' => 'pass1', 'on' => 'resetPass, changePassword'),

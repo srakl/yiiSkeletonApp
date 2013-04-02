@@ -11,8 +11,6 @@ $this->breadcrumbs = array(
 
 <p>Please provide your email address in the field below to reset your password.</p>
 
-<?php if ($model->isNewRecord): ?>
-
 <?php
 $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id' => 'user-form',
@@ -43,15 +41,3 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 </div>
 
 <?php $this->endWidget(); ?>
-
-<?php else: ?>
-
-    <?php app()->user->setFlash('info', '<strong>Password Reset Instantiated:</strong> In the future, this will send an email to the users email address with the reset link. For now, <a href="'.url('user/newPassword') . '?req=' . $hash.'">click here</a>. This link is valid for 24 hours only.'); ?>
-
-    <?php $this->widget('bootstrap.widgets.TbAlert', array(
-        'block' => true,
-        'fade' => true,
-        'closeText' => '&times;',
-    ));
-    ?>
-<?php endif; ?>
