@@ -14,24 +14,25 @@ $this->menu = array(
 );
 
 $columns = array(
-    array('name' => 'id', 'header' => 'ID'),
-    array('name' => 'first_name', 'header' => 'Name', 'type' => 'raw', 'value' => 'User::model()->findByPk($data->id)->getFullName()'),
+    array('filter' => false, 'name' => 'id', 'header' => 'ID'),
+    array('filter' => false, 'name' => 'first_name', 'header' => 'Name', 'type' => 'raw', 'value' => 'User::model()->findByPk($data->id)->getFullName()'),
     array('name' => 'email', 'header' => 'Email'),
-    array('name' => 'phone', 'header' => 'Phone', 'type' => 'raw', 'value' => 'Shared::formatPhone($data->phone)'),
-    array('name' => 'last_login', 'header' => 'Last Login', 'type' => 'raw', 'value' => 'Shared::formatShortUSDate($data->last_login)'),
+    array('filter' => false, 'name' => 'phone', 'header' => 'Phone', 'type' => 'raw', 'value' => 'Shared::formatPhone($data->phone)'),
+    array('filter' => false, 'name' => 'last_login', 'header' => 'Last Login', 'type' => 'raw', 'value' => 'Shared::formatShortUSDate($data->last_login)'),
 );
 
-if (app()->user->isAdmin()) {
+//if (app()->user->isAdmin()) {
     $columns[] = array(
-        'class' => 'CButtonColumn',
+        'class' => 'bootstrap.widgets.TbButtonColumn',
         'template' => '{update} {delete}',
     );
-}
+//}
 
 $dataArray = array(
-    'type' => 'striped bordered condensed',
+    'type' => 'bordered',
     'dataProvider' => $dataProvider,
-    'template' => "{items}",
+    'filter' => $model,
+    'template' => "{items}\n{pager}",
     'columns' => $columns,
 );
 ?>

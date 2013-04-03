@@ -82,7 +82,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 </fieldset>
 
 <div class="form-actions">
-    <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label' => $model->isNewRecord ? 'Register' : 'Update')); ?>
+    <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label' => $model->isNewRecord ? app()->user->isAdmin() ? 'Create User' : 'Register' : 'Update')); ?>
 </div>
 
 <?php $this->endWidget(); ?>

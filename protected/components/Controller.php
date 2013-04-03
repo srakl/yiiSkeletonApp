@@ -30,9 +30,8 @@ class Controller extends CController {
      */
     protected function authAdminOnly() {
         if (app()->user->isGuest()) {
-            Yii::app()->user->loginRequired();
-        } else
-        if (!app()->user->isAdmin()) {
+            app()->user->loginRequired();
+        } elseif (!app()->user->isAdmin()) {
             throw new CHttpException(403, 'Access Denied.');
         }
         return true;

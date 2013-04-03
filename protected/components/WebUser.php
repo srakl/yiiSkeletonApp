@@ -9,7 +9,7 @@ class WebUser extends CWebUser {
     private $_user;
     
     /**
-     * Is it inradius administrator? Should this guy have full rights?
+     * Is it an administrator? Should this guy have full rights?
      * @return type
      */
     function isAdmin() {

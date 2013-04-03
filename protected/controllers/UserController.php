@@ -5,66 +5,50 @@ class UserController extends Controller {
     /**
      * @return array action filters
      */
-    /* public function filters()
-      {
-      return array(
-      'accessControl', // perform access control for CRUD operations
-      'postOnly + delete', // we only allow deletion via POST request
-      );
-      }
-     * 
-     */
+    public function filters() {
+        return array(
+            'accessControl',
+            'postOnly + delete',
+        );
+    }
+    
+    public function accessRules() {
+        return array(
+            
+        );
+    }
 
     public function actions() {
         return array(
-            // captcha action renders the CAPTCHA image displayed on the contact page
             'captcha' => array(
                 'class' => 'CCaptchaAction',
                 'backColor' => 0xFFFFFF,
-                'foreColor'=>0x333333,
+                'foreColor' => 0x333333,
             ),
         );
     }
 
-    /**
-     * Lists all models.
-     */
     public function actionIndex() {
-        if (app()->user->isAdmin()) {
-            $id = app()->user->getUser()->id;
-            $model = User::model()->findByPk($id);
-            $dataProvider = new CActiveDataProvider('User');
-            $this->render('index', array(
-                'dataProvider' => $dataProvider,
-                'model' => $model,
-            ));
-        } else {
-            if (app()->user->isGuest()) {
-                app()->user->loginRequired();
-            } else {
-                // take this user to their user update page
-                $this->redirect(array('/user/update', 'id' => app()->user->getUser()->id));
+        if ($this->authAdminOnly()) {
+            $criteria = new CDbCriteria();
+            $model = new User('search');
+            if (isset($_GET['User'])) {
+                $model->attributes = $_GET['User'];
+                $criteria->mergeWith($model->search());
             }
+            $dataProvider = new CActiveDataProvider('User', array(
+                        'pagination' => array('pageSize' => 10),
+                        'criteria' => $criteria,
+                    ));
+            $this->render('index', array(
+                'model' => $model,
+                'dataProvider' => $dataProvider,
+            ));
         }
     }
 
-    /**
-     * Displays a particular model.
-     * @param integer $id the ID of the model to be displayed
-
-      public function actionView($id) {
-      $this->render('view', array(
-      'model' => $this->loadModel($id),
-      ));
-      }
-     */
-
-    /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     */
     public function actionRegister() {
-        if(!app()->user->isAdmin()){
+        if (!app()->user->isAdmin()) {
             $model = new User('register');
             //$this->performAjaxValidation($model);
             if (isset($_POST['User'])) {
@@ -85,11 +69,11 @@ class UserController extends Controller {
             $this->redirect(array('/user/create'));
         }
     }
-    
+
     public function actionCreate() {
-        if(app()->user->isAdmin()){ // change this to filter() later (dont forget!)
+        if ($this->authAdminOnly()) {
             $model = new User('create');
-            
+
             if (isset($_POST['User'])) {
                 $model->attributes = $_POST['User'];
                 if ($model->validate()) {
@@ -108,24 +92,17 @@ class UserController extends Controller {
                     if ($mail->Send()) {
                         $model->save(); // only save if an email is sent
                         $mail->ClearAddresses();
-                        app()->user->setFlash('success','Account created and details sent to users inbox.');
+                        app()->user->setFlash('success', 'Account created and details sent to users inbox.');
                         $this->redirect(array('/user/index'));
                     } else {
-                        app()->user->setFlash('error','Error while sending email: '.$mail->ErrorInfo);
+                        app()->user->setFlash('error', 'Error while sending email: ' . $mail->ErrorInfo);
                     }
                 }
             }
             $this->render('create', array('model' => $model));
-        } else {
-            $this->redirect(array('/user/register'));
         }
     }
 
-    /**
-     * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
-     */
     public function actionUpdate($id) {
         $user = app()->user->getUser();
         if (isset($user->id) && $user->id === $id || app()->user->isAdmin()) {
@@ -147,17 +124,14 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
     public function actionDelete($id) {
-        $this->loadModel($id)->delete();
+        if($this->authAdminOnly()){
+            $this->loadModel($id)->delete();
 
-        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if (!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if (!isset($_GET['ajax']))
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        }
     }
 
     public function actionPassword($id) {
@@ -183,11 +157,8 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * Request a password reset.
-     */
     public function actionForgotPassword() {
-        if(app()->user->isGuest()){
+        if (app()->user->isGuest()) {
             $model = new User('passwordReset');
             $model->setScenario('forgotPassword');
             $hash = '';
@@ -199,11 +170,13 @@ class UserController extends Controller {
                     $model = User::model()->findByEmail($_POST['User']['email']);
                     // generate the md5 hash
                     $timestamp = time();
-                    $hash = md5($model->email . $model->password . $timestamp);
+                    $hash = crypt($model->email . $model->password . $timestamp, Randomness::blowfishSalt());
+                    Shared::debug($hash);
+                    //$hash = md5($model->email . $model->password . $timestamp);
                     $model->password_reset = $timestamp;
                     // save the timestamp (password reset is good for 24 hours only)
                     $model->save();
-                    
+
                     $mail = new Mailer('forgotPass', array('hash' => $hash));
                     /**
                      * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
@@ -214,12 +187,11 @@ class UserController extends Controller {
                     $mail->Subject = 'Yii Skeleton App Password Reset';
                     $mail->AddAddress($model->email);
                     if ($mail->Send()) {
-                        $model->save(); // only save if an email is sent
                         $mail->ClearAddresses();
-                        app()->user->setFlash('success','Please check your email for further instructions.');
+                        app()->user->setFlash('success', 'Please check your email for further instructions.');
                         $this->redirect(array('/site/index'));
                     } else {
-                        app()->user->setFlash('error','Error while sending email: '.$mail->ErrorInfo);
+                        app()->user->setFlash('error', 'Error while sending email: ' . $mail->ErrorInfo);
                     }
                 }
             }
@@ -230,16 +202,13 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * 
-     */
     public function actionNewPassword($req) {
         // lookup users, who requested a password change
         $since = strtotime(Shared::toDatabase(time()) . " -1 day");
         $users = User::model()->findAllBySql("SELECT * FROM user WHERE password_reset > $since");
         $found = null;
         foreach ($users as $model) {
-            if ($req == md5($model->email . $model->password . $model->password_reset)) {
+            if ($req === crypt($model->email . $model->password . $model->password_reset, $req)) {
                 $found = $model;
                 break;
             }
@@ -255,18 +224,6 @@ class UserController extends Controller {
                         app()->user->setFlash('success', 'Your password has been reset.');
                         $this->redirect(app()->user->getHomeUrl());
                     }
-
-                    /* log the user in
-                      $userArray = array();
-                      $userArray['username'] = $found['email_address'];
-                      $userArray['password'] = $_POST['User']['pass1'];
-                      $userArray['rememberMe'] = 0;
-                      $model = new LoginForm;
-                      $model->attributes = $userArray;
-                      if ($model->validate() && $model->login()) {
-                      $this->redirect(app()->user->getHomeUrl());
-                      app()->end();
-                      } */
                 }
             }
             $this->render('new_password', array('model' => $found));

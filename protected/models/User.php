@@ -72,12 +72,12 @@ class User extends CActiveRecord {
             array('password, pass2', 'application.components.validate.EPasswordStrength', 'on' => 'register'),
             array('email', 'email', 'on' => 'update, create, register'),
             array('first_name, last_name', 'application.components.validate.ENameValidator'),
-            array('email', 'unique', 'on' => 'register'),
+            array('email', 'unique', 'on' => 'create, register'),
             array('email, phone', 'default', 'setOnEmpty' => true), // make empty values stored as NULL
             array('last_login', 'safe'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                //array('user_id, email_address, first_name, last_name, address, phone_number, password, super_admin, params, last_login, email_verified, password_reset, login_disabled', 'safe', 'on' => 'search'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, email, first_name, last_name, phone_number, super_admin, email_verified, login_disabled', 'safe', 'on' => 'search'),
         );
     }
 
@@ -123,28 +123,15 @@ class User extends CActiveRecord {
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    /* public function search()
-      {
-      // Warning: Please modify the following code to remove attributes that
-      // should not be searched.
+    public function search() {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
 
-      $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
+        $criteria->compare('email', $this->email, true);
 
-      $criteria->compare('user_id',$this->user_id,true);
-      $criteria->compare('email_address',$this->email_address,true);
-      $criteria->compare('first_name',$this->first_name);
-      $criteria->compare('last_name',$this->last_name);
-      $criteria->compare('address',$this->address,true);
-      $criteria->compare('phone_number',$this->phone_number,true);
-      $criteria->compare('password',$this->password,true);
-      $criteria->compare('super_admin',$this->super_admin);
-      $criteria->compare('params',$this->params,true);
-      $criteria->compare('last_login',$this->last_login,true);
-
-      return new CActiveDataProvider($this, array(
-      'criteria'=>$criteria,
-      ));
-      } */
+        return $criteria;
+    }
 
     public function isAdmin() {
         return $this->admin;
