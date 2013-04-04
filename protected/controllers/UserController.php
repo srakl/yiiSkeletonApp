@@ -20,7 +20,7 @@ class UserController extends Controller {
                 'expression' => 'app()->user->isGuest()',
             ),
             array('allow',
-                'actions' => array('password', 'mewPassword', 'update'),
+                'actions' => array('password', 'newPassword', 'update'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -76,14 +76,15 @@ class UserController extends Controller {
                 $model = User::create($_POST['User']);
                 $model->activate = User::encrypt(microtime() . $model->password);
 
-                $mail = new Mailer($email, array('password' => $model->pass1, 'activate' => $model->activate));
+                Shared::debug($model->pass1);
+                $mail = new Mailer($email, array('username' => $model->email, 'password' => $model->pass1, 'activate' => $model->activate));
                 /**
                  * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
                  */
                 $mail->render();
                 $mail->From = app()->params['adminEmail'];
                 $mail->FromName = app()->params['adminEmailName'];
-                $mail->Subject = 'Your Yii Skeleton App Account';
+                $mail->Subject = 'Your '.app()->name.' Account';
                 $mail->AddAddress($model->email);
                 if($mail->Send()) {
                     $model->save();
