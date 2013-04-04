@@ -10,7 +10,7 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
     array('label'=>'List User', 'url'=>array('index'), 'active' => true),
-    array('label' => 'Create User', 'url' => array('register')),
+    array('label' => 'Create User', 'url' => array('create')),
 );
 
 $columns = array(

@@ -7,7 +7,7 @@ if(app()->user->isAdmin()){
     $this->layout = 'column2';
     $this->menu = array(
         array('label'=>'List User', 'url'=>array('index')),
-        array('label' => 'Create User', 'url' => array('register'), 'active' => true),
+        array('label' => 'Create User', 'url' => array('create'), 'active' => true),
     );
 } else {
     $pageName = 'Register User';

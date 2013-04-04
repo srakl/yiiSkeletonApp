@@ -89,6 +89,7 @@ return array(
     'params' => array(
         // this is used in contact page
         'adminEmail' => 'root@localhost',
+        'adminEmailName' => 'root',
         'mailer' => array(
             'viewPath' => 'application.views.mail',
             'layoutPath' => 'application.views.layouts',

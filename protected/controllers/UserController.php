@@ -11,10 +11,25 @@ class UserController extends Controller {
             'postOnly + delete',
         );
     }
-    
+
     public function accessRules() {
         return array(
-            
+            // Actions: index, create, update, password, newPassword, forgotPassword, delete
+            array('allow',
+                'actions' => array('captcha', 'create', 'forgotPassword'),
+                'expression' => 'app()->user->isGuest()',
+            ),
+            array('allow',
+                'actions' => array('password', 'mewPassword', 'update'),
+                'users' => array('@'),
+            ),
+            array('allow',
+                'actions' => array('index', 'create', 'register', 'delete'),
+                'expression' => 'app()->user->isAdmin()',
+            ),
+            array('deny',
+                'users' => array('*'),
+            ),
         );
     }
 
@@ -29,78 +44,58 @@ class UserController extends Controller {
     }
 
     public function actionIndex() {
-        if ($this->authAdminOnly()) {
-            $criteria = new CDbCriteria();
-            $model = new User('search');
-            if (isset($_GET['User'])) {
-                $model->attributes = $_GET['User'];
-                $criteria->mergeWith($model->search());
-            }
-            $dataProvider = new CActiveDataProvider('User', array(
-                        'pagination' => array('pageSize' => 10),
-                        'criteria' => $criteria,
-                    ));
-            $this->render('index', array(
-                'model' => $model,
-                'dataProvider' => $dataProvider,
-            ));
+        $criteria = new CDbCriteria();
+        $model = new User('search');
+        if (isset($_GET['User'])) {
+            $model->attributes = $_GET['User'];
+            $criteria->mergeWith($model->search());
         }
-    }
-
-    public function actionRegister() {
-        if (!app()->user->isAdmin()) {
-            $model = new User('register');
-            //$this->performAjaxValidation($model);
-            if (isset($_POST['User'])) {
-                $model->attributes = $_POST['User'];
-                if ($model->validate()) {
-                    $model = User::create($_POST['User']);
-                    $model->activate = User::encrypt(microtime() . $model->password);
-
-                    // send the user an activation link email (later)
-                    $model->save();
-                    app()->user->setFlash('success', 'Registration successful. Check your email.');
-                    $this->redirect(app()->user->getHomeUrl());
-                }
-            }
-            // render the create form
-            $this->render('create', array('model' => $model));
-        } else {
-            $this->redirect(array('/user/create'));
-        }
+        $dataProvider = new CActiveDataProvider('User', array(
+                    'pagination' => array('pageSize' => 10),
+                    'criteria' => $criteria,
+                ));
+        $this->render('index', array(
+            'model' => $model,
+            'dataProvider' => $dataProvider,
+        ));
     }
 
     public function actionCreate() {
-        if ($this->authAdminOnly()) {
+        if(app()->user->isAdmin()){
             $model = new User('create');
+            $email = 'adminCreate';
+            $redirect = array('/user/index');
+        } else {
+            $model = new User('register');
+            $email = 'userCreate';
+            $redirect = array('/site/index');
+        }
+        if(isset($_POST['User'])) {
+            $model->attributes = $_POST['User'];
+            if($model->validate()) {
+                $model = User::create($_POST['User']);
+                $model->activate = User::encrypt(microtime() . $model->password);
 
-            if (isset($_POST['User'])) {
-                $model->attributes = $_POST['User'];
-                if ($model->validate()) {
-                    $model = User::create($_POST['User']);
-                    $model->activate = User::encrypt(microtime() . $model->password);
-
-                    $mail = new Mailer('user', array('password' => $model->pass1, 'activate' => $model->activate));
-                    /**
-                     * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
-                     */
-                    $mail->render();
-                    $mail->From = app()->params['adminEmail'];
-                    $mail->FromName = 'Yii Skeleton App Mailer';
-                    $mail->Subject = 'Your Yii Skeleton App Account';
-                    $mail->AddAddress($model->email);
-                    if ($mail->Send()) {
-                        $model->save(); // only save if an email is sent
-                        $mail->ClearAddresses();
-                        app()->user->setFlash('success', 'Account created and details sent to users inbox.');
-                        $this->redirect(array('/user/index'));
-                    } else {
-                        app()->user->setFlash('error', 'Error while sending email: ' . $mail->ErrorInfo);
-                    }
+                $mail = new Mailer($email, array('password' => $model->pass1, 'activate' => $model->activate));
+                /**
+                 * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
+                 */
+                $mail->render();
+                $mail->From = app()->params['adminEmail'];
+                $mail->FromName = app()->params['adminEmailName'];
+                $mail->Subject = 'Your Yii Skeleton App Account';
+                $mail->AddAddress($model->email);
+                if($mail->Send()) {
+                    $model->save();
+                    $mail->ClearAddresses();
+                    app()->user->setFlash('success', 'Account created and details sent to users inbox.');
+                    $this->redirect($redirect);
+                } else {
+                    app()->user->setFlash('error', 'Error while sending email: ' . $mail->ErrorInfo);
                 }
             }
-            $this->render('create', array('model' => $model));
         }
+        $this->render('create', array('model' => $model));
     }
 
     public function actionUpdate($id) {
@@ -125,13 +120,13 @@ class UserController extends Controller {
     }
 
     public function actionDelete($id) {
-        if($this->authAdminOnly()){
-            $this->loadModel($id)->delete();
+        //if($this->authAdminOnly()){
+        $this->loadModel($id)->delete();
 
-            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-            if (!isset($_GET['ajax']))
-                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-        }
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        if (!isset($_GET['ajax']))
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        //}
     }
 
     public function actionPassword($id) {
@@ -158,48 +153,43 @@ class UserController extends Controller {
     }
 
     public function actionForgotPassword() {
-        if (app()->user->isGuest()) {
-            $model = new User('passwordReset');
-            $model->setScenario('forgotPassword');
-            $hash = '';
-            //$this->performAjaxValidation($model);
-            if (isset($_POST['User'])) {
-                $model->attributes = $_POST['User'];
-                if ($model->validate()) {
-                    // find the correct user
-                    $model = User::model()->findByEmail($_POST['User']['email']);
-                    // generate the md5 hash
-                    $timestamp = time();
-                    $hash = crypt($model->email . $model->password . $timestamp, Randomness::blowfishSalt());
-                    Shared::debug($hash);
-                    //$hash = md5($model->email . $model->password . $timestamp);
-                    $model->password_reset = $timestamp;
-                    // save the timestamp (password reset is good for 24 hours only)
-                    $model->save();
+        $model = new User('passwordReset');
+        $model->setScenario('forgotPassword');
+        $hash = '';
+        //$this->performAjaxValidation($model);
+        if (isset($_POST['User'])) {
+            $model->attributes = $_POST['User'];
+            if ($model->validate()) {
+                // find the correct user
+                $model = User::model()->findByEmail($_POST['User']['email']);
+                // generate the md5 hash
+                $timestamp = time();
+                $hash = crypt($model->email . $model->password . $timestamp, Randomness::blowfishSalt());
+                Shared::debug($hash);
+                //$hash = md5($model->email . $model->password . $timestamp);
+                $model->password_reset = $timestamp;
+                // save the timestamp (password reset is good for 24 hours only)
+                $model->save();
 
-                    $mail = new Mailer('forgotPass', array('hash' => $hash));
-                    /**
-                     * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
-                     */
-                    $mail->render();
-                    $mail->From = app()->params['adminEmail'];
-                    $mail->FromName = 'Yii Skeleton App Mailer';
-                    $mail->Subject = 'Yii Skeleton App Password Reset';
-                    $mail->AddAddress($model->email);
-                    if ($mail->Send()) {
-                        $mail->ClearAddresses();
-                        app()->user->setFlash('success', 'Please check your email for further instructions.');
-                        $this->redirect(array('/site/index'));
-                    } else {
-                        app()->user->setFlash('error', 'Error while sending email: ' . $mail->ErrorInfo);
-                    }
+                $mail = new Mailer('forgotPass', array('hash' => $hash));
+                /**
+                 * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
+                 */
+                $mail->render();
+                $mail->From = app()->params['adminEmail'];
+                $mail->FromName = 'Yii Skeleton App Mailer';
+                $mail->Subject = 'Yii Skeleton App Password Reset';
+                $mail->AddAddress($model->email);
+                if ($mail->Send()) {
+                    $mail->ClearAddresses();
+                    app()->user->setFlash('success', 'Please check your email for further instructions.');
+                    $this->redirect(array('/site/index'));
+                } else {
+                    app()->user->setFlash('error', 'Error while sending email: ' . $mail->ErrorInfo);
                 }
             }
-            $this->render('forgot_password', array('model' => $model));
-        } else {
-            // you are logged in... how did you forget your password?
-            $this->redirect(array('/user/password', 'id' => app()->user->id));
         }
+        $this->render('forgot_password', array('model' => $model));
     }
 
     public function actionNewPassword($req) {

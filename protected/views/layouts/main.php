@@ -63,7 +63,7 @@ if(app()->user->hasFlash('success')) {
                     'label'=>'Register',
                     'type'=>'info',
                     'size'=>'normal',
-                    'url'=>array('/user/register'),
+                    'url'=>array('/user/create'),
                 ):''),
             ),
         ));
