@@ -154,6 +154,8 @@ class User extends CActiveRecord {
             $model = new User;
         }
         $password = isset($input['password']) ? $input['password'] : '';
+        Shared::debug('$password: '.$password);
+        
         if (null == $model) {
             // used by admin for creating a user (be sure to send the random password to the user...)
             $model = new User;
@@ -162,13 +164,15 @@ class User extends CActiveRecord {
             if (strlen($model->password) == 0) {
                 // create new one if nothing is provided (only applies to admins creating new users)
                 $password = Shared::generateMnemonicPassword(8);
-                $model->password = crypt($password, Randomness::blowfishSalt());
-                $model->pass1 = $password;
             } else {
-                $model->password = crypt($password, Randomness::blowfishSalt());
+                $password = $model->password;
             }
+            $model->password = crypt($password, Randomness::blowfishSalt());
+            $model->pass1 = $password;
             $model->email = strtolower($model->email);
         }
+        Shared::debug('$model->pass1: '.$model->pass1);
+        Shared::debug('$password: '.$password);
         return $model;
     }
 

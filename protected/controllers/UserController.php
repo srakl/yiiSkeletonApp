@@ -16,11 +16,11 @@ class UserController extends Controller {
         return array(
             // Actions: index, create, update, password, newPassword, forgotPassword, delete
             array('allow',
-                'actions' => array('captcha', 'create', 'forgotPassword'),
+                'actions' => array('captcha', 'create', 'forgotPassword', 'newPassword'),
                 'expression' => 'app()->user->isGuest()',
             ),
             array('allow',
-                'actions' => array('password', 'newPassword', 'update'),
+                'actions' => array('password', 'update'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -76,7 +76,7 @@ class UserController extends Controller {
                 $model = User::create($_POST['User']);
                 $model->activate = User::encrypt(microtime() . $model->password);
 
-                Shared::debug($model->pass1);
+                Shared::debug('$model->pass1: '.$model->pass1);
                 $mail = new Mailer($email, array('username' => $model->email, 'password' => $model->pass1, 'activate' => $model->activate));
                 /**
                  * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
@@ -157,17 +157,12 @@ class UserController extends Controller {
         $model = new User('passwordReset');
         $model->setScenario('forgotPassword');
         $hash = '';
-        //$this->performAjaxValidation($model);
         if (isset($_POST['User'])) {
             $model->attributes = $_POST['User'];
             if ($model->validate()) {
-                // find the correct user
                 $model = User::model()->findByEmail($_POST['User']['email']);
-                // generate the md5 hash
                 $timestamp = time();
                 $hash = crypt($model->email . $model->password . $timestamp, Randomness::blowfishSalt());
-                Shared::debug($hash);
-                //$hash = md5($model->email . $model->password . $timestamp);
                 $model->password_reset = $timestamp;
                 // save the timestamp (password reset is good for 24 hours only)
                 $model->save();
@@ -178,8 +173,8 @@ class UserController extends Controller {
                  */
                 $mail->render();
                 $mail->From = app()->params['adminEmail'];
-                $mail->FromName = 'Yii Skeleton App Mailer';
-                $mail->Subject = 'Yii Skeleton App Password Reset';
+                $mail->FromName = app()->params['adminEmailName'];
+                $mail->Subject = app()->name.' Password Reset';
                 $mail->AddAddress($model->email);
                 if ($mail->Send()) {
                     $mail->ClearAddresses();
