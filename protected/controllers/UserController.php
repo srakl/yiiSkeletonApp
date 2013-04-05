@@ -61,38 +61,37 @@ class UserController extends Controller {
     }
 
     public function actionCreate() {
-        if(app()->user->isAdmin()){
+        if (app()->user->isAdmin()) {
             $model = new User('create');
             $email = 'adminCreate';
+            $success = 'Account created and details sent to users inbox.';
             $redirect = array('/user/index');
         } else {
             $model = new User('register');
             $email = 'userCreate';
+            $success = 'Account registered. Please check your email.';
             $redirect = array('/site/index');
         }
-        if(isset($_POST['User'])) {
+        if (isset($_POST['User'])) {
             $model->attributes = $_POST['User'];
-            if($model->validate()) {
+            if ($model->validate()) {
                 $model = User::create($_POST['User']);
                 $model->activate = User::encrypt(microtime() . $model->password);
 
-                Shared::debug('$model->pass1: '.$model->pass1);
+                $model->save();
+                app()->user->setFlash('success', $success);
                 $mail = new Mailer($email, array('username' => $model->email, 'password' => $model->pass1, 'activate' => $model->activate));
-                /**
-                 * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
-                 */
+
                 $mail->render();
                 $mail->From = app()->params['adminEmail'];
                 $mail->FromName = app()->params['adminEmailName'];
-                $mail->Subject = 'Your '.app()->name.' Account';
+                $mail->Subject = 'Your ' . app()->name . ' Account';
                 $mail->AddAddress($model->email);
-                if($mail->Send()) {
-                    $model->save();
+                if ($mail->Send()) {
                     $mail->ClearAddresses();
-                    app()->user->setFlash('success', 'Account created and details sent to users inbox.');
                     $this->redirect($redirect);
                 } else {
-                    app()->user->setFlash('error', 'Error while sending email: ' . $mail->ErrorInfo);
+                    $this->redirect($redirect);
                 }
             }
         }
@@ -163,6 +162,7 @@ class UserController extends Controller {
                 $model = User::model()->findByEmail($_POST['User']['email']);
                 $timestamp = time();
                 $hash = crypt($model->email . $model->password . $timestamp, Randomness::blowfishSalt());
+                Shared::debug($hash);
                 $model->password_reset = $timestamp;
                 // save the timestamp (password reset is good for 24 hours only)
                 $model->save();
@@ -174,7 +174,7 @@ class UserController extends Controller {
                 $mail->render();
                 $mail->From = app()->params['adminEmail'];
                 $mail->FromName = app()->params['adminEmailName'];
-                $mail->Subject = app()->name.' Password Reset';
+                $mail->Subject = app()->name . ' Password Reset';
                 $mail->AddAddress($model->email);
                 if ($mail->Send()) {
                     $mail->ClearAddresses();

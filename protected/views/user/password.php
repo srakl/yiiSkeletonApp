@@ -21,7 +21,7 @@ $this->breadcrumbs = $breadcrumbs;
 
 $this->menu=array(
 	array('label'=>'List User', 'url'=>array('index')),
-	array('label'=>'Create User', 'url'=>array('register')),
+	array('label'=>'Create User', 'url'=>array('create')),
 );
 ?>
 

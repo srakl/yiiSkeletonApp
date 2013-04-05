@@ -1,5 +1,3 @@
-<?php Shared::debug('$password: '.$password); ?>
-
 <p>Welcome to <?php echo app()->name; ?>.</p>
 
 <p>Thank you for registering an account with us! Here are your login credentials.</p>

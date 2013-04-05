@@ -56,8 +56,9 @@ class User extends CActiveRecord {
         return array(
             array('email', 'required'),
             array('email', 'exist', 'on' => 'forgotPassword'),
-            array('old_password, pass1, pass2', 'required', 'on' => 'resetPass, changePassword'),
             array('old_password', 'application.components.validate.ECurrentPassword', 'on' => 'changePassword'),
+            array((app()->user->isAdmin()?'pass1, pass2':'old_password, pass1, pass2'), 'required', 'on' => 'changePassword'),
+            array('pass1, pass2', 'required', 'on' => 'resetPass'),
             array('pass2', 'compare', 'compareAttribute' => 'pass1', 'on' => 'resetPass, changePassword'),
             array('pass1, pass2', 'application.components.validate.EPasswordStrength', 'on' => 'resetPass, changePassword'),
             array('password, pass2', 'required', 'on' => 'register'),
@@ -154,7 +155,6 @@ class User extends CActiveRecord {
             $model = new User;
         }
         $password = isset($input['password']) ? $input['password'] : '';
-        Shared::debug('$password: '.$password);
         
         if (null == $model) {
             // used by admin for creating a user (be sure to send the random password to the user...)
@@ -171,8 +171,6 @@ class User extends CActiveRecord {
             $model->pass1 = $password;
             $model->email = strtolower($model->email);
         }
-        Shared::debug('$model->pass1: '.$model->pass1);
-        Shared::debug('$password: '.$password);
         return $model;
     }
 
