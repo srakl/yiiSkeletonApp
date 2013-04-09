@@ -4,7 +4,7 @@
 $this->pageTitle = app()->name;
 ?>
 
-<h1>Welcome to <i><?php echo h(Yii::app()->name); ?></i></h1>
+<h1>Welcome to <i><?php echo h(app()->name); ?></i></h1>
 
 <p>Congratulations! You have successfully created your Yii application.</p>
 

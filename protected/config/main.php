@@ -15,7 +15,7 @@ return array(
         'ext.mailer.components.*',
     ),
     'modules' => array(
-        'gii' => array(
+        /*'gii' => array(
             'class' => 'system.gii.GiiModule',
             'password' => 'password',
             'generatorPaths' => array(
@@ -23,7 +23,7 @@ return array(
             ),
             // If removed, Gii defaults to localhost only. Edit carefully to taste.
             'ipFilters' => array('127.0.0.1', '::1'),
-        ),
+        ),*/
     ),
     // application components
     'components' => array(
@@ -60,6 +60,11 @@ return array(
         'errorHandler' => array(
             // use 'site/error' action to display errors
             'errorAction' => 'site/error',
+        ),
+        'facebook' => array(
+            'class' => 'ext.facebook.components.SFacebook',
+            'appId' => 'FACEBOOK_APP_ID_HERE',
+            'secret' => 'FACEBOOK_SECRET_HERE',
         ),
         'log' => array(
             'class' => 'CLogRouter',

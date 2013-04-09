@@ -4,7 +4,7 @@ class FBConnect extends CWidget {
 
     public $channel;
     public $userSession;
-    public $fbAppId = "471779039535216";
+    public $fbAppId = "FACEBOOK_APP_ID_HERE";
     public $fbLoginButtonId = "fblogin";
     public $facebookLoginUrl = "facebook";
     public $facebookPermissions = "email,user_likes";
