@@ -1,6 +1,5 @@
 <?php
 /**
- * LikeBox class file.
  *
  * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @author Ianaré Sévi (original author) www.digitick.net
@@ -11,7 +10,7 @@
  *
  */
 
-require_once "/../assets/base_facebook.php";
+require_once Yii::getPathOfAlias('ext.facebook.assets').'/base_facebook.php';
 
 /**
  * Extends the BaseFacebook class with the intent of using
