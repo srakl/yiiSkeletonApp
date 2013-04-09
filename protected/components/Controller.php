@@ -26,8 +26,6 @@ class Controller extends CController {
 
     protected function afterRender($view, &$output) {
         parent::afterRender($view, $output);
-        //Yii::app()->facebook->addJsCallback($js); // use this if you are registering any $js code you want to run asyc
-        //app()->facebook->initJs($output);
         app()->facebook->renderOGMetaTags();
         return true;
     }

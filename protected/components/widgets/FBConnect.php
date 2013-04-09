@@ -35,7 +35,7 @@ class FBConnect extends CWidget {
         $script = <<<EOL
         window.fbAsyncInit = function() {
             FB.init({ appId: '{$this->fbAppId}'
-                , channel: '{$this->channel}/channel.html'
+                , channel: '{$this->channel}/channel.php'
                 , status: true
                 , cookie: true
                 , xfbml: true

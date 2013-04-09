@@ -13,6 +13,7 @@ I've included some extensions that I pretty much always use. These include:
 * Notify Bar ([GitHub](https://github.com/dknight/jQuery-Notify-bar))
 * Randomness ([GitHub](https://github.com/tom--/Randomness))
 * PHPMailer (YiiMailer) ([GitHub](https://github.com/vernes/YiiMailer))
+* Facebook PHP SDK ([GitHub](https://github.com/splashlab/yii-facebook-opengraph))
 * LESS CSS - PHP Compiler
 
 ## Install
