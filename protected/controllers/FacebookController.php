@@ -34,7 +34,18 @@ class FacebookController extends Controller {
                         $model = User::create($model->attributes);
                         $model->activate = User::encrypt(microtime() . $model->password);
                         $model->save();
-                        // We should email the user with their password and activation link here
+                        $mail = new Mailer('fbRegister', array('username' => $model->email, 'password' => $model->pass1, 'activate' => $model->activate));
+                        /**
+                         * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
+                         */
+                        $mail->render();
+                        $mail->From = app()->params['adminEmail'];
+                        $mail->FromName = app()->params['adminEmailName'];
+                        $mail->Subject = 'Your ' . app()->name . ' Account';
+                        $mail->AddAddress($model->email);
+                        if ($mail->Send()) {
+                            $mail->ClearAddresses();
+                        }
                         $identity = new UserIdentity( $model->email , null );
                         $identity->_fbAuth = true;
                         $identity->authenticate();

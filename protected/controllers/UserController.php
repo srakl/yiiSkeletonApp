@@ -81,7 +81,9 @@ class UserController extends Controller {
                 $model->save();
                 app()->user->setFlash('success', $success);
                 $mail = new Mailer($email, array('username' => $model->email, 'password' => $model->pass1, 'activate' => $model->activate));
-
+                /**
+                 * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
+                 */
                 $mail->render();
                 $mail->From = app()->params['adminEmail'];
                 $mail->FromName = app()->params['adminEmailName'];
