@@ -14,10 +14,9 @@ if(app()->user->hasFlash('success')) {
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="language" content="en" />
 
-        <link rel="stylesheet" type="text/css" href="<?php echo app()->request->baseUrl; ?>/css/system.css" media="screen, projection" />
-
         <title><?php echo h($this->pageTitle); ?></title>
         <?php app()->bootstrap->register(); ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo app()->request->baseUrl; ?>/css/system.css" media="screen, projection" />
     </head>
 
     <body>
@@ -69,27 +68,39 @@ if(app()->user->hasFlash('success')) {
         ));
         ?>
 
-        <div class="container main-holder">
-            
-            <?php
-            if(isset($this->breadcrumbs)){
-                $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
-                    'links' => $this->breadcrumbs,
-                ));
-            }
-            ?>
-            
-            <?php echo $content; ?>
-            
-        </div>
+        <div id="page">
 
-        <footer class="footer" id="footer">
-            <div class="container">
-                Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
-                All Rights Reserved.<br/>
-                <?php echo Yii::powered(); ?>
+            <div class="container main-holder">
+
+                <?php
+                if(isset($this->breadcrumbs)){
+                    $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
+                        'links' => $this->breadcrumbs,
+                    ));
+                }
+                ?>
+
+                <?php if(app()->user->hasFlash('info')) {
+                    $this->widget('bootstrap.widgets.TbAlert', array(
+                        'block' => true,
+                        'fade' => true,
+                        'closeText' => '&times;',
+                    ));
+                } ?>
+
+                <?php echo $content; ?>
+
             </div>
-        </footer>
+            
+            <footer class="footer" id="footer">
+                <div class="container">
+                    Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
+                    All Rights Reserved.<br/>
+                    <?php echo Yii::powered(); ?>
+                </div>
+            </footer>
+
+        </div>
 
     </body>
 </html>

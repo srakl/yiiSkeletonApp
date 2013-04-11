@@ -43,6 +43,7 @@ class FacebookController extends Controller {
                         $mail->FromName = app()->params['adminEmailName'];
                         $mail->Subject = 'Your ' . app()->name . ' Account';
                         $mail->AddAddress($model->email);
+                        Shared::debug($mail);
                         if ($mail->Send()) {
                             $mail->ClearAddresses();
                         }
@@ -51,6 +52,7 @@ class FacebookController extends Controller {
                         $identity->authenticate();
                         if($identity->errorCode === UserIdentity::ERROR_NONE){
                             app()->user->login($identity, null);
+                            app()->user->setFlash('info', '<strong>Registration Success</strong> Facebook profile successfully registered. Check your email for activation instructions.');
                             echo json_encode(array('error' => false, 'success' => url('/')));
                             app()->end();
                         } else {
@@ -59,11 +61,13 @@ class FacebookController extends Controller {
                         }
                     }
                 } else {
+                    // fb user id past from ajax does not match who facebook says they are...
                     echo json_encode(array('error' => 'Facebook Authentication Failed', 'code' => 'fb_auth'));
                     app()->end();
                 }
             } else {
-                echo json_encode(array('error' => 'Session Conflict', 'code' => 'session'));
+                // yii session from ajax does not match current yii session
+                echo json_encode(array('error' => 'Session Authentication Failed', 'code' => 'session'));
                 app()->end();
             }
         } else {
