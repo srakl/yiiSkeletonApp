@@ -441,18 +441,18 @@ class SFacebook extends CApplicationComponent
   protected function _getFacebook()
   {
     if (is_null($this->_facebook)) {
-      if ($this->appId && $this->secret) {
+      if (app()->params['facebook']['appId'] && app()->params['facebook']['secret']) {
         $this->_facebook = new SBaseFacebook(
           array(
-            'appId' => $this->appId,
-            'secret' => $this->secret,
+            'appId' => app()->params['facebook']['appId'],
+            'secret' => app()->params['facebook']['secret'],
             'fileUpload' => $this->fileUpload,
             'trustForwarded' => $this->trustForwarded,
           ));
       } else {
-        if (!$this->appId)
+        if (!app()->params['facebook']['appId'])
           throw new CException('Facebook application ID not specified.');
-        elseif (!$this->secret)
+        elseif (!app()->params['facebook']['secret'])
           throw new CException('Facebook application secret not specified.');
       }
     }

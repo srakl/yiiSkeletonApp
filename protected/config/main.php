@@ -63,8 +63,6 @@ return array(
         ),
         'facebook' => array(
             'class' => 'ext.facebook.components.SFacebook',
-            'appId' => 'FACEBOOK_APP_ID_HERE',
-            'secret' => 'FACEBOOK_SECRET_HERE',
         ),
         'log' => array(
             'class' => 'CLogRouter',
@@ -122,6 +120,10 @@ return array(
                 'smtp_error' => Yii::t('YiiMailer', 'SMTP server error: '),
                 'variable_set' => Yii::t('YiiMailer', 'Cannot set or reset variable: ')
             ),
+        ),
+        'facebook' => array(
+            'appId' => '471779039535216',
+            'secret' => '4e17156f8558b56b35b1e49cf25b1d4e',
         ),
     ),
 );

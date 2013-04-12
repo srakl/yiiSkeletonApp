@@ -3,8 +3,7 @@
 class FBConnect extends CWidget {
 
     public $channel;
-    public $userSession;
-    public $fbAppId = "FACEBOOK_APP_ID_HERE";
+    public $fbAppId;
     public $fbLoginButtonId = "fblogin";
     public $facebookLoginUrl = "facebook";
     public $facebookPermissions = "email,user_likes";
@@ -26,7 +25,7 @@ class FBConnect extends CWidget {
         if(app()->user->isGuest()){
             $this->channel = app()->getAssetManager()->publish(Yii::getPathOfAlias('application.components.widgets.FBConnect'), false, 1);
             $this->facebookLoginUrl = url($this->facebookLoginUrl);
-            $this->userSession = app()->session->sessionID;
+            $this->fbAppId = app()->params['facebook']['appId'];
             $this->renderJavascript();
         }
     }
@@ -51,9 +50,7 @@ class FBConnect extends CWidget {
                             FB.api('/me', function(user) {
                                 $.ajax({ type : 'post'
                                     , url: '{$this->facebookLoginUrl}'
-                                    , data: ({ user: user
-                                        , session: "{$this->userSession}"
-                                    })
+                                    , data: ({ user: user })
                                     , dataType: 'json'
                                     , success: function(data){
                                         if(data.error == 0){

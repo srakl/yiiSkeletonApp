@@ -28,12 +28,12 @@ class WebUser extends CWebUser {
      * @return type 
      */
     function getUser() {
-
         if ($this->isGuest)
             return false;
         if ($this->_user === null) {
-            // check the cache first
-            $this->_user = User::findInCache($this->id);
+            // should check the cache first, but this is still to-do
+            //$this->_user = User::findInCache($this->id);
+            $this->_user = User::model()->findByPk($this->id);
         }
         return $this->_user;
     }

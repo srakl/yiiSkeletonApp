@@ -57,7 +57,7 @@ class User extends CActiveRecord {
             array('email', 'required'),
             array('email', 'exist', 'on' => 'forgotPassword'),
             array('old_password', 'application.components.validate.ECurrentPassword', 'on' => 'changePassword'),
-            array((app()->user->isAdmin()?'pass1, pass2':'old_password, pass1, pass2'), 'required', 'on' => 'changePassword'),
+            array((app()->user->isAdmin() ? 'pass1, pass2' : 'old_password, pass1, pass2'), 'required', 'on' => 'changePassword'),
             array('pass1, pass2', 'required', 'on' => 'resetPass'),
             array('pass2', 'compare', 'compareAttribute' => 'pass1', 'on' => 'resetPass, changePassword'),
             array('pass1, pass2', 'application.components.validate.EPasswordStrength', 'on' => 'resetPass, changePassword'),
@@ -155,7 +155,7 @@ class User extends CActiveRecord {
             $model = new User;
         }
         $password = isset($input['password']) ? $input['password'] : '';
-        
+
         if (null == $model) {
             // used by admin for creating a user (be sure to send the random password to the user...)
             $model = new User;
@@ -172,34 +172,6 @@ class User extends CActiveRecord {
             $model->email = strtolower($model->email);
         }
         return $model;
-    }
-
-    /**
-     * Cache generic user object used from WebUser. We want to cache the menus and
-     * roles.
-     * @param type $pk
-     */
-    public static function findInCache($pk) {
-        $user = app()->cache->get('user-' . $pk);
-        if ($user === false) {
-            //Shared::debug("save user to cache");
-            $user = self::model()->findByPk($pk);
-            if ($user == null)
-                return null;
-
-            // preload
-            //$user->getUserMenu();
-            // and save
-            $user->saveToCache();
-            return $user;
-        } else {
-            //Shared::debug("found in cache");
-            // found, but we still have to construct the object
-            $model = new User;
-            $model->loadFromCache($user);
-            $model->id = $pk; // PK is not part of attributes
-            return $model;
-        }
     }
 
     public function getFullName() {
@@ -233,16 +205,6 @@ class User extends CActiveRecord {
             // keep the original one
             $this->restoreAttribute('password');
         }
-    }
-
-    /**
-     * Save User menu and attributes to cache as an associative array
-     */
-    public function saveToCache() {
-        $attributes = array(
-            'attributes' => $this->attributes,
-        );
-        app()->cache->set('user-' . $this->id, $attributes, 1200);
     }
 
 }
