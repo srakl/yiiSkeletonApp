@@ -30,6 +30,8 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'icon' => 'user', 'label'=>'Login')); ?>
     
     <?php $this->widget('application.components.widgets.FBConnect'); ?>
+    
+    <?php $this->widget('application.components.widgets.GConnect'); ?>
 </div>
 
 <?php $this->endWidget(); ?>
