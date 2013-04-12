@@ -122,8 +122,11 @@ return array(
             ),
         ),
         'facebook' => array(
-            'appId' => '471779039535216',
-            'secret' => '4e17156f8558b56b35b1e49cf25b1d4e',
+            'appId' => 'FACEBOOK_APP_ID',
+            'secret' => 'FACEBOOK_SECRET_KEY',
+        ),
+        'google' => array(
+            'clientId' => 'GOOGLE_CLIENT_ID'
         ),
     ),
 );

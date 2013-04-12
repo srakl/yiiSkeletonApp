@@ -2,14 +2,14 @@
 
 class GConnect extends CWidget {
 
-    public $gAppId;
+    public $gClientId;
     public $gLoginButtonId = "glogin";
     public $gLoginUrl = "google";
 
     public function init() {
         if(app()->user->isGuest()){
             $this->gLoginUrl = url($this->gLoginUrl);
-            $this->gAppId = "505023187211.apps.googleusercontent.com";
+            $this->gClientId = app()->params['google']['clientId'];
             $this->renderJavascript();
         }
     }
@@ -29,7 +29,7 @@ class GConnect extends CWidget {
         (function render() {
             gapi.signin.render('customBtn', {
                 'callback': 'googleCallback',
-                'clientid': '{$this->gAppId}',
+                'clientid': '{$this->gClientId}',
                 'cookiepolicy': 'single_host_origin',
                 'requestvisibleactions': 'http://schemas.google.com/AddActivity',
                 'scope': 'https://www.googleapis.com/auth/userinfo.email'
@@ -38,7 +38,9 @@ class GConnect extends CWidget {
         var googleCallback = function(authResult) {
             if(authResult['g-oauth-window']){
                 if(authResult['code']) {
-                    alert("(Still in development - Travis Stroud) " + authResult['code']);
+                    console.log("Auth Code: " + authResult['code']);
+                    console.log("Access Token: " + authResult['access_token']);
+                    alert("(Still in development - Travis Stroud) " + authResult['code'] + authResult['access_token']);
                 } else {
                     alert("action canceled");
                 }
