@@ -17,7 +17,7 @@ class GConnect extends CWidget {
     public function run() {
         if(app()->user->isGuest()){
             cs()->registerScriptFile('https://plus.google.com/js/client:plusone.js', CClientScript::POS_HEAD);
-            echo '<div id="customBtn" class="btn btn-danger">
+            echo '<div id="customBtn" class="btn btn-danger" data-loading-text="&lt;i class="icon-spinner icon-spin"&rt;&lt;/i&rt; Login with Google">
                 <i class="icon-google-plus"></i>
                 <span class="buttonText">Login with Google</span>
             </div>';
@@ -38,11 +38,19 @@ class GConnect extends CWidget {
         var googleCallback = function(authResult) {
             if(authResult['g-oauth-window']){
                 if(authResult['code']) {
-                    console.log("Auth Code: " + authResult['code']);
-                    console.log("Access Token: " + authResult['access_token']);
-                    alert("(Still in development - Travis Stroud) " + authResult['code'] + authResult['access_token']);
-                } else {
-                    alert("action canceled");
+                    $.ajax({ type : 'post'
+                        , url: '{$this->gLoginUrl}'
+                        , data: ({ code: authResult['code'] })
+                        , dataType: 'json'
+                        , success: function(data){
+                            if(data.error == 0){
+                                alert(data.success);
+                            } else {
+                                showError(data.error);
+                            }
+                        }
+                        //, processData: false
+                    });
                 }
             }
         };

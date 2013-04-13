@@ -64,6 +64,11 @@ return array(
         'facebook' => array(
             'class' => 'ext.facebook.components.SFacebook',
         ),
+        'google' => array(
+            'class' => 'ext.google.components.SGoogle',
+            'clientId' => 'GOOGLE_CLIENT_ID',
+            'clientSecret' => 'GOOGLE_CLIENT_SECRET',
+        ),
         'log' => array(
             'class' => 'CLogRouter',
             'routes' => array(
