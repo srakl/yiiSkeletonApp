@@ -13,7 +13,7 @@ class FacebookController extends Controller {
                 if(!empty($model)){
                     // facebook email matches one in the user database
                     $identity = new UserIdentity( $model->email , null );
-                    $identity->_fbAuth = true;
+                    $identity->_ssoAuth = true;
                     $identity->authenticate();
                     if($identity->errorCode === UserIdentity::ERROR_NONE){
                         app()->user->login($identity, null);
@@ -46,7 +46,7 @@ class FacebookController extends Controller {
                         $mail->ClearAddresses();
                     }
                     $identity = new UserIdentity( $model->email , null );
-                    $identity->_fbAuth = true;
+                    $identity->_ssoAuth = true;
                     $identity->authenticate();
                     if($identity->errorCode === UserIdentity::ERROR_NONE){
                         app()->user->login($identity, null);

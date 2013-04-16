@@ -52,7 +52,7 @@ return array(
             'charset' => 'utf8',
         ),
         'cache' => array(
-            'class' => 'CDummyCache',
+            'class' => 'CFileCache',
         ),
         'bootstrap' => array(
             'class' => 'ext.bootstrap.components.Bootstrap',
@@ -63,6 +63,8 @@ return array(
         ),
         'facebook' => array(
             'class' => 'ext.facebook.components.SFacebook',
+            'appId' => 'FACEBOOK_APP_ID',
+            'secret' => 'FACEBOOK_SECRET_KEY',
         ),
         'google' => array(
             'class' => 'ext.google.components.SGoogle',
@@ -125,13 +127,6 @@ return array(
                 'smtp_error' => Yii::t('YiiMailer', 'SMTP server error: '),
                 'variable_set' => Yii::t('YiiMailer', 'Cannot set or reset variable: ')
             ),
-        ),
-        'facebook' => array(
-            'appId' => 'FACEBOOK_APP_ID',
-            'secret' => 'FACEBOOK_SECRET_KEY',
-        ),
-        'google' => array(
-            'clientId' => 'GOOGLE_CLIENT_ID'
         ),
     ),
 );

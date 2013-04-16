@@ -13,8 +13,8 @@ class SGoogle extends CApplicationComponent {
 
     // Credentials can be obtained at https://code.google.com/apis/console
     // See http://code.google.com/p/google-api-php-client/wiki/OAuth2 for more information
-    private $clientId = null;
-    private $clientSecret = null;
+    public $clientId = null;
+    public $clientSecret = null;
 
     // Make sure that this matches a registered redirect URI for your app
     private $redirectUri = null;

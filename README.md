@@ -14,6 +14,7 @@ I've included some extensions that I pretty much always use. These include:
 * Randomness ([GitHub](https://github.com/tom--/Randomness))
 * PHPMailer (YiiMailer) ([GitHub](https://github.com/vernes/YiiMailer))
 * Facebook PHP SDK ([GitHub](https://github.com/splashlab/yii-facebook-opengraph))
+* [Google PHP Client Library](https://code.google.com/p/google-api-php-client/)
 * LESS CSS - PHP Compiler
 
 ## Install

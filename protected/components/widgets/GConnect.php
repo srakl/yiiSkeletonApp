@@ -3,13 +3,16 @@
 class GConnect extends CWidget {
 
     public $gClientId;
+    public $state;
     public $gLoginButtonId = "glogin";
     public $gLoginUrl = "google";
 
     public function init() {
         if(app()->user->isGuest()){
             $this->gLoginUrl = url($this->gLoginUrl);
-            $this->gClientId = app()->params['google']['clientId'];
+            $this->gClientId = app()->google->clientId;
+            $this->state = md5(rand());
+            app()->cache->set('google-state', $this->state);
             $this->renderJavascript();
         }
     }
@@ -17,17 +20,21 @@ class GConnect extends CWidget {
     public function run() {
         if(app()->user->isGuest()){
             cs()->registerScriptFile('https://plus.google.com/js/client:plusone.js', CClientScript::POS_HEAD);
-            echo '<div id="customBtn" class="btn btn-danger" data-loading-text="&lt;i class="icon-spinner icon-spin"&rt;&lt;/i&rt; Login with Google">
-                <i class="icon-google-plus"></i>
-                <span class="buttonText">Login with Google</span>
-            </div>';
+            $this->widget('bootstrap.widgets.TbButton', array(
+                'buttonType' => 'button',
+                'type' => 'danger',
+                'label' => 'Login with Google',
+                'icon' => 'icon-google-plus',
+                'loadingText' => '<i class="icon-spinner icon-spin"></i> Login with Google',
+                'htmlOptions' => array('id' => 'google-login'),
+            ));
         }
     }
 
     private function renderJavascript() {
         $script = <<<EOL
         (function render() {
-            gapi.signin.render('customBtn', {
+            gapi.signin.render('google-login', {
                 'callback': 'googleCallback',
                 'clientid': '{$this->gClientId}',
                 'cookiepolicy': 'single_host_origin',
@@ -35,23 +42,35 @@ class GConnect extends CWidget {
                 'scope': 'https://www.googleapis.com/auth/userinfo.email'
             });
         })();
+        $('#google-login').click(function() {
+            $(this).button('loading');
+        });
         var googleCallback = function(authResult) {
             if(authResult['g-oauth-window']){
                 if(authResult['code']) {
-                    $.ajax({ type : 'post'
-                        , url: '{$this->gLoginUrl}'
-                        , data: ({ code: authResult['code'] })
+                    gapi.client.load('plus','v1',getId);
+                } else {
+                    $('#google-login').button('reset');
+                }
+            }
+            function getId() {
+                var request = gapi.client.plus.people.get( {'userId' : 'me'} );
+                request.execute(function(profile) {
+                    $.ajax({
+                        url: '{$this->gLoginUrl}?state={$this->state}&gplus_id=' + profile.id
+                        , type : 'post'
                         , dataType: 'json'
                         , success: function(data){
                             if(data.error == 0){
-                                alert(data.success);
+                                window.location.href = data.success;
                             } else {
                                 showError(data.error);
+                                $('#google-login').button('reset');
                             }
                         }
-                        //, processData: false
+                        , data: { code: authResult.code }
                     });
-                }
+                });
             }
         };
 EOL;

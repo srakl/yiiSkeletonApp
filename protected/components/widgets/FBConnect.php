@@ -25,7 +25,7 @@ class FBConnect extends CWidget {
         if(app()->user->isGuest()){
             $this->channel = app()->getAssetManager()->publish(Yii::getPathOfAlias('application.components.widgets.FBConnect'), false, 1);
             $this->facebookLoginUrl = url($this->facebookLoginUrl);
-            $this->fbAppId = app()->params['facebook']['appId'];
+            $this->fbAppId = app()->facebook->appId;
             $this->renderJavascript();
         }
     }
