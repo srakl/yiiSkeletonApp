@@ -15,7 +15,7 @@ if(app()->user->hasFlash('success')) {
         <meta name="language" content="en" />
 
         <title><?php echo h($this->pageTitle); ?></title>
-        <?php app()->bootstrap->register(); ?>
+        <?php app()->bootstrap->register(true); ?>
         <link rel="stylesheet" type="text/css" href="<?php echo app()->request->baseUrl; ?>/css/system.css" media="screen, projection" />
     </head>
 
@@ -27,7 +27,7 @@ if(app()->user->hasFlash('success')) {
         $this->widget('bootstrap.widgets.TbNavbar', array(
             'brand' => h(app()->name),
             'brandUrl' => bu(),
-            'collapse' => false, // bootstrap responsive layout
+            'collapse' => true,
             'items'=>array(
                 array(
                     'class'=>'bootstrap.widgets.TbMenu',

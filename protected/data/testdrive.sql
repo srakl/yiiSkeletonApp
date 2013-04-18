@@ -13,17 +13,8 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
---
--- Create schema testdrive
---
-
 CREATE DATABASE IF NOT EXISTS testdrive;
 USE testdrive;
-
---
--- Definition of table `user`
---
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
@@ -47,29 +38,11 @@ CREATE TABLE `user` (
   UNIQUE KEY `unique_email` (`email`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `user`
---
-
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`,`email`,`first_name`,`last_name`,`address`,`city`,`state`,`postal_code`,`phone`,`password`,`activate`,`last_login`,`password_reset`,`admin`,`email_verified`,`login_disabled`) VALUES 
  (1,'admin@yourdomain.com','','','','','','','','$2a$10$wODTQSlr.4e3Lz2VssUYE.XLvHKtTDKXtaGwkCcUccCygIsRn4.Va','','2013-02-09 23:28:15',0,1,1,0),
  (2,'demo@yourdomain.com','','','','','','','','$2a$10$Pg6UXbH2K5rE2pFkuzBIXOe.JDm0fS54TLJ.yOj/j/7T0nh9Gx5dm','','2013-02-09 22:54:10',0,0,1,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
-
---
--- Definition of table `fb_user`
---
-
-DROP TABLE IF EXISTS `fb_user`;
-CREATE TABLE `fb_user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `fb_uid` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`,`user_id`) USING BTREE,
-  KEY `user_fb_fk` (`user_id`),
-  CONSTRAINT `user_fb_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 PACK_KEYS=0;
 
 
 

@@ -11,19 +11,18 @@ class GoogleController extends Controller {
         if (app()->request->isAjaxRequest) {
             if (app()->request->getParam('state') != app()->cache->get('google-state')) {
                 // check the anti-request forgery state token first
-                echo json_encode(array('error' => 'Invalid CSRF Token', 'code' => 'state'));
+                echo json_encode(array('error' => 'Invalid CSRF token. Try refreshing your browser.', 'code' => 'state'));
                 app()->end();
             }
             if (count($_REQUEST) != 0) {
                 $gplusId = app()->request->getParam('gplus_id');
                 $code = app()->request->getParam('code');
             }
-            
+
             $client = new Google_Client();
             $client->setClientId(app()->google->clientId);
             $client->setClientSecret(app()->google->clientSecret);
             $client->setRedirectUri('postmessage');
-            $plus = new Google_PlusService($client);
             $client->authenticate($code);
             $token = json_decode($client->getAccessToken());
             $reqUrl = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='.$token->access_token;
@@ -55,6 +54,7 @@ class GoogleController extends Controller {
                     app()->end();
                 }
             } else {
+                $plus = new Google_PlusService($client);
                 $user = $plus->people->get('me');
                 $model = new User('create');
                 $model->email = $tokenInfo->email;

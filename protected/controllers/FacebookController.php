@@ -6,7 +6,7 @@ class FacebookController extends Controller {
 
     public function actionFacebook() {
         if (app()->request->isAjaxRequest) {
-            $user = $_POST['user'];
+            $user = app()->request->getParam('user');
             // verify one last time that facebook knows this guy
             if($user['id'] === app()->facebook->getUser()){
                 $model = User::model()->findByEmail($user['email']);

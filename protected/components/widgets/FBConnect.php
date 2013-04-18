@@ -47,6 +47,7 @@ class FBConnect extends CWidget {
                     $("#{$this->fbLoginButtonId}").button("loading");
                     FB.login(function(response) {
                         if(response.authResponse) {
+                            $('#processing').modal({show: true, backdrop: 'static', keyboard: false});
                             FB.api('/me', function(user) {
                                 $.ajax({ type : 'post'
                                     , url: '{$this->facebookLoginUrl}'
@@ -56,6 +57,7 @@ class FBConnect extends CWidget {
                                         if(data.error == 0){
                                             window.location.href = data.success;
                                         } else {
+                                            $('#processing').modal('hide');
                                             showError(data.error);
                                             $("#{$this->fbLoginButtonId}").button("reset");
                                         }

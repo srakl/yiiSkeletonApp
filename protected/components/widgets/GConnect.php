@@ -48,6 +48,7 @@ class GConnect extends CWidget {
         var googleCallback = function(authResult) {
             if(authResult['g-oauth-window']){
                 if(authResult['code']) {
+                    $('#processing').modal({show: true, backdrop: 'static', keyboard: false});
                     gapi.client.load('plus','v1',getId);
                 } else {
                     $('#google-login').button('reset');
@@ -64,6 +65,7 @@ class GConnect extends CWidget {
                             if(data.error == 0){
                                 window.location.href = data.success;
                             } else {
+                                $('#processing').modal('hide');
                                 showError(data.error);
                                 $('#google-login').button('reset');
                             }
