@@ -41,7 +41,6 @@ class FacebookController extends Controller {
                     $mail->FromName = app()->params['adminEmailName'];
                     $mail->Subject = 'Your ' . app()->name . ' Account';
                     $mail->AddAddress($model->email);
-                    Shared::debug($mail);
                     if ($mail->Send()) {
                         $mail->ClearAddresses();
                     }

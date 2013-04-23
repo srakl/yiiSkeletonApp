@@ -9,12 +9,12 @@ class GoogleController extends Controller {
 
     public function actionGoogle() {
         if (app()->request->isAjaxRequest) {
-            if (app()->request->getParam('state') != app()->cache->get('google-state')) {
-                // check the anti-request forgery state token first
-                echo json_encode(array('error' => 'Invalid CSRF token. Try refreshing your browser.', 'code' => 'state'));
-                app()->end();
-            }
             if (count($_REQUEST) != 0) {
+                if (app()->request->getParam('state') != app()->cache->get('google-state')) {
+                    // check the anti-request forgery state token first
+                    echo json_encode(array('error' => 'Invalid CSRF token. Try refreshing your browser.', 'code' => 'state'));
+                    app()->end();
+                }
                 $gplusId = app()->request->getParam('gplus_id');
                 $code = app()->request->getParam('code');
             }
@@ -23,6 +23,7 @@ class GoogleController extends Controller {
             $client->setClientId(app()->google->clientId);
             $client->setClientSecret(app()->google->clientSecret);
             $client->setRedirectUri('postmessage');
+            $plus = new Google_PlusService($client);
             $client->authenticate($code);
             $token = json_decode($client->getAccessToken());
             $reqUrl = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='.$token->access_token;
@@ -38,7 +39,6 @@ class GoogleController extends Controller {
                 app()->end();
             }
             
-            //$me = $plus->people->get('me');
             $model = User::model()->findByEmail($tokenInfo->email);
             if(!empty($model)){
                 // google email matches one in the user database
@@ -54,7 +54,6 @@ class GoogleController extends Controller {
                     app()->end();
                 }
             } else {
-                $plus = new Google_PlusService($client);
                 $user = $plus->people->get('me');
                 $model = new User('create');
                 $model->email = $tokenInfo->email;
@@ -88,9 +87,6 @@ class GoogleController extends Controller {
                     app()->end();
                 }
             }
-
-            echo json_encode(array('error' => false, 'success' => url('/')));
-            app()->end();
         } else {
             throw new CHttpException(403);
         }

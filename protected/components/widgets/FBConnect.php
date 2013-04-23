@@ -31,7 +31,7 @@ class FBConnect extends CWidget {
     }
 
     private function renderJavascript() {
-        $script = <<<EOL
+        $script = <<<EOD
         window.fbAsyncInit = function() {
             FB.init({ appId: '{$this->fbAppId}'
                 , channel: '{$this->channel}/channel.php'
@@ -73,11 +73,10 @@ class FBConnect extends CWidget {
             FB.Event.subscribe('auth.statusChange', updateButton);	
 
         };
-        
-        
+
         (function(d){var e,id = "fb-root";if( d.getElementById(id) == null ){e = d.createElement("div");e.id=id;d.body.appendChild(e);}}(document));
         (function(d){var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];if (d.getElementById(id)) {return;} js = d.createElement('script'); js.id = id; js.async = true; js.src = "//connect.facebook.net/en_US/all.js"; ref.parentNode.insertBefore(js, ref); }(document));
-EOL;
+EOD;
 
         cs()->registerScript('facebook-connect', $script, CClientScript::POS_BEGIN);
     }

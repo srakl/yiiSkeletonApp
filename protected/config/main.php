@@ -63,13 +63,13 @@ return array(
         ),
         'facebook' => array(
             'class' => 'ext.facebook.components.SFacebook',
-            'appId' => 'FACEBOOK_APP_ID',
-            'secret' => 'FACEBOOK_SECRET_KEY',
+            'appId' => '471779039535216',
+            'secret' => '4e17156f8558b56b35b1e49cf25b1d4e',
         ),
         'google' => array(
             'class' => 'ext.google.components.SGoogle',
-            'clientId' => 'GOOGLE_CLIENT_ID',
-            'clientSecret' => 'GOOGLE_CLIENT_SECRET',
+            'clientId' => '505023187211.apps.googleusercontent.com',
+            'clientSecret' => 'XQAvxN1wUoCGMJebG41nSIA4',
         ),
         'log' => array(
             'class' => 'CLogRouter',

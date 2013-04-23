@@ -32,7 +32,7 @@ class GConnect extends CWidget {
     }
 
     private function renderJavascript() {
-        $script = <<<EOL
+        $script = <<<EOD
         (function render() {
             gapi.signin.render('google-login', {
                 'callback': 'googleCallback',
@@ -75,7 +75,7 @@ class GConnect extends CWidget {
                 });
             }
         };
-EOL;
+EOD;
 
         cs()->registerScript('google-connect', $script, CClientScript::POS_END);
     }

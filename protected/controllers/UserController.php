@@ -105,7 +105,6 @@ class UserController extends Controller {
         if (isset($user->id) && $user->id === $id || app()->user->isAdmin()) {
             // only accessable by id holder or admin
             $model = $this->loadModel($id);
-            $this->performAjaxValidation($model);
             if (isset($_POST['User'])) {
                 $model->attributes = $_POST['User'];
                 if ($model->validate()) {
@@ -240,7 +239,7 @@ class UserController extends Controller {
     protected function performAjaxValidation($model) {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'user-form') {
             echo CActiveForm::validate($model);
-            Yii::app()->end();
+            app()->end();
         }
     }
 
