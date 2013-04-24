@@ -26,6 +26,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'user', 'label' => 'Login')); ?>
     <?php $this->widget('application.components.widgets.FBConnect'); ?>
     <?php $this->widget('application.components.widgets.GConnect'); ?>
+    <?php $this->widget('application.components.widgets.LiveConnect'); ?>
 </div>
 
 <div id="processing" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="processingLabel" aria-hidden="true">
