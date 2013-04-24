@@ -2,55 +2,64 @@
 
 class LiveConnect extends CWidget {
 
-    public $state;
-    public $liveLoginUrl = "site/login";
+    public $callback;
+    public $redirect = "site/login";
+    public $liveLoginUrl = "live";
+    private $_csrfToken;
 
     public function init() {
         if(app()->user->isGuest()){
-            // generate csrf token
-            $this->state = md5(rand());
-            app()->cache->set('live-state', $this->state);
-            $this->widget('bootstrap.widgets.TbButton', array(
-                'buttonType' => 'button',
-                'type' => 'info',
-                'label' => 'Login with Windows',
-                'icon' => 'icon-th-large',
-                'loadingText' => '<i class="icon-spinner icon-spin"></i> Login with Windows',
-                'htmlOptions' => array('id' => 'live-login'),
-            ));
+            if(!isset($this->_csrfToken))
+                $this->_csrfToken = sha1(uniqid(mt_rand(), true));
+            echo CHtml::link('Windows Live', null, array('id'=>'live-login'));
         }
     }
 
     public function run() {
         if(app()->user->isGuest()){
             cs()->registerScriptFile('//js.live.net/v5.0/wl.js', CClientScript::POS_HEAD);
+            $this->callback = app()->getAssetManager()->publish(Yii::getPathOfAlias('application.components.widgets.LiveConnect'), false, 1);
+            $this->redirect = url($this->redirect);
             $this->liveLoginUrl = url($this->liveLoginUrl);
+            app()->session['live-state'] = $this->_csrfToken;
             $this->renderJavascript();
         }
     }
 
     private function renderJavascript() {
         $script = <<<EOD
-        WL.init({ client_id: 'WINDOWS_LIVE_ID'
-                , redirect_uri: "{$this->liveLoginUrl}"
-                , scope: ["wl.signin", "wl.emails"]
-            });
+        WL.Event.subscribe('auth.statusChange', liveButton);
+        WL.init({ client_id: 'WINDOWS_LIVE_ID' , redirect_uri: "{$this->callback}/callback.php" , scope: ["wl.signin", "wl.emails"] });
 
         function liveButton(response) {
             var l = document.getElementById("live-login");
             l.onclick = function(){
                 WL.login().then(
-                    function (response) {
-                        console.log(response);
-                    }, function (responseFailed) {
-                        console.log(responseFailed);
+                    function(response) {
+                        WL.api({path: "me", method: "GET"}).then(
+                            function(user) {
+                                $.ajax({ type : 'post'
+                                    , url: '{$this->liveLoginUrl}?state={$this->_csrfToken}'
+                                    , data: ({ user: user })
+                                    , dataType: 'json'
+                                    , success: function(data){
+                                        if(data.error == 0){
+                                            window.location.href = data.success;
+                                        } else {
+                                            showError(data.error);
+                                        }
+                                    }
+                                });
+                            }, function(responseFailed) {
+                                // failed to get users data from windows live
+                            }
+                        );
                     }
                 );
             }
         }
 
         WL.getLoginStatus(liveButton);
-        WL.Event.subscribe('auth.statusChange', liveButton);
 EOD;
 
         cs()->registerScript('live-connect', $script, CClientScript::POS_BEGIN);

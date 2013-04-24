@@ -51,8 +51,16 @@ return array(
             'password' => '',
             'charset' => 'utf8',
         ),
+        'session' => array(
+            'class' => 'system.web.CCacheHttpSession',
+            'cacheID' => 'sessionCache',
+            'timeout' => 3600,
+        ),
+        'sessionCache' => array(
+            'class' => 'CApcCache',
+        ),
         'cache' => array(
-            'class' => 'CFileCache',
+            'class' => 'CApcCache',
         ),
         'bootstrap' => array(
             'class' => 'ext.bootstrap.components.Bootstrap',

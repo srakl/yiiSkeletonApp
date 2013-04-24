@@ -15,6 +15,7 @@ I've included some extensions that I pretty much always use. These include:
 * PHPMailer (YiiMailer) ([GitHub](https://github.com/vernes/YiiMailer))
 * Facebook PHP SDK ([GitHub](https://github.com/splashlab/yii-facebook-opengraph))
 * [Google PHP Client Library](https://code.google.com/p/google-api-php-client/)
+* [Windows Live JS SDK](http://msdn.microsoft.com/en-us/library/live/hh243643.aspx)
 * LESS CSS - PHP Compiler
 
 ## Install
@@ -25,3 +26,6 @@ To install this skeleton application:
 3. Create a MySQL schema (the app uses `testdrive` as default) and extract the `/protected/data/testdrive.sql` dump to that schema.
 4. Modify the `/protected/config/main.php` file to reflect your database credentials.
 5. Customize to your needs and desires.
+
+## Important
+My skeleton application relies on PHPs APC extension for session and caching. This may not be enabled on your web host. If that's the case, I recommend falling back on the CFileCache provided in the Yii Framework. These settings are in the `/protected/config/main.php` file.
