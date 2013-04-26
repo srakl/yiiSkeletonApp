@@ -3,23 +3,14 @@
 class GConnect extends CWidget {
 
     public $gClientId;
-    public $state;
     public $gLoginButtonId = "glogin";
     public $gLoginUrl = "google";
+    private $_csrfToken;
 
     public function init() {
         if(app()->user->isGuest()){
-            $this->gLoginUrl = url($this->gLoginUrl);
-            $this->gClientId = app()->google->clientId;
-            $this->state = md5(rand());
-            app()->cache->set('google-state', $this->state);
-            $this->renderJavascript();
-        }
-    }
-
-    public function run() {
-        if(app()->user->isGuest()){
-            cs()->registerScriptFile('https://plus.google.com/js/client:plusone.js', CClientScript::POS_HEAD);
+            if(!isset($this->_csrfToken))
+                $this->_csrfToken = sha1(uniqid(mt_rand(), true));
             $this->widget('bootstrap.widgets.TbButton', array(
                 'buttonType' => 'button',
                 'type' => 'danger',
@@ -28,6 +19,16 @@ class GConnect extends CWidget {
                 'loadingText' => '<i class="icon-spinner icon-spin"></i> Login with Google',
                 'htmlOptions' => array('id' => 'google-login'),
             ));
+        }
+    }
+
+    public function run() {
+        if(app()->user->isGuest()){
+            cs()->registerScriptFile('https://plus.google.com/js/client:plusone.js', CClientScript::POS_HEAD);
+            $this->gLoginUrl = url($this->gLoginUrl);
+            $this->gClientId = app()->google->clientId;
+            app()->session['google-state'] = $this->_csrfToken;
+            $this->renderJavascript();
         }
     }
 
@@ -58,7 +59,7 @@ class GConnect extends CWidget {
                 var request = gapi.client.plus.people.get( {'userId' : 'me'} );
                 request.execute(function(profile) {
                     $.ajax({
-                        url: '{$this->gLoginUrl}?state={$this->state}&gplus_id=' + profile.id
+                        url: '{$this->gLoginUrl}?state={$this->_csrfToken}&gplus_id=' + profile.id
                         , type : 'post'
                         , dataType: 'json'
                         , success: function(data){

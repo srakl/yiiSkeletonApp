@@ -6,8 +6,6 @@ class LiveController extends Controller {
 
     public function actionLive() {
         if (app()->request->isAjaxRequest) {
-            Shared::debug("Posted state: ".app()->request->getParam('state'));
-            Shared::debug("Stored state: ".app()->session['live-state']);
             if (app()->request->getParam('state') != app()->session['live-state']) {
                 echo json_encode(array('error' => 'Invalid CSRF token. Try refreshing your browser.', 'code' => 'state'));
                 app()->end();

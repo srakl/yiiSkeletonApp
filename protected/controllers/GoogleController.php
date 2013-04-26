@@ -9,15 +9,12 @@ class GoogleController extends Controller {
 
     public function actionGoogle() {
         if (app()->request->isAjaxRequest) {
-            if (count($_REQUEST) != 0) {
-                if (app()->request->getParam('state') != app()->cache->get('google-state')) {
-                    // check the anti-request forgery state token first
-                    echo json_encode(array('error' => 'Invalid CSRF token. Try refreshing your browser.', 'code' => 'state'));
-                    app()->end();
-                }
-                $gplusId = app()->request->getParam('gplus_id');
-                $code = app()->request->getParam('code');
+            if (app()->request->getParam('state') != app()->session['google-state']) {
+                echo json_encode(array('error' => 'Invalid CSRF token. Try refreshing your browser.', 'code' => 'state'));
+                app()->end();
             }
+            $gplusId = app()->request->getParam('gplus_id');
+            $code = app()->request->getParam('code');
 
             $client = new Google_Client();
             $client->setClientId(app()->google->clientId);

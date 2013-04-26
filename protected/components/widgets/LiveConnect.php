@@ -3,7 +3,6 @@
 class LiveConnect extends CWidget {
 
     public $callback;
-    public $redirect = "site/login";
     public $liveLoginUrl = "live";
     private $_csrfToken;
 
@@ -19,7 +18,6 @@ class LiveConnect extends CWidget {
         if(app()->user->isGuest()){
             cs()->registerScriptFile('//js.live.net/v5.0/wl.js', CClientScript::POS_HEAD);
             $this->callback = app()->getAssetManager()->publish(Yii::getPathOfAlias('application.components.widgets.LiveConnect'), false, 1);
-            $this->redirect = url($this->redirect);
             $this->liveLoginUrl = url($this->liveLoginUrl);
             app()->session['live-state'] = $this->_csrfToken;
             $this->renderJavascript();
