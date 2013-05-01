@@ -1,6 +1,6 @@
 Yii Framework Skeleton App
 ======================
-This is a generic Yii Framework application with MySQL integration. I built this simple app as the starting point for many projects I have worked on in the past. This application allows for user registration, user sign-in and sign-out, Facebook sign-in, and password reset.
+This is a generic Yii Framework application with MySQL integration. I built this simple app as the starting point for many projects I have worked on in the past. This application allows for user registration, user sign-in and sign-out, Facebook/Google+/Windows Live sign-in, and password reset.
 
 This skeleton application does not include the Yii Framework itself. Download it [here](https://github.com/yiisoft/yii/).
 
@@ -18,14 +18,5 @@ I've included some extensions that I pretty much always use. These include:
 * [Windows Live JS SDK](http://msdn.microsoft.com/en-us/library/live/hh243643.aspx)
 * LESS CSS - PHP Compiler
 
-## Install
-To install this skeleton application:
-
-1. Unpack everything to a web accessible directory.
-2. Download the [Yii Framework](https://github.com/yiisoft/yii/) and extract just the core framework to the `/yii/` directory.
-3. Create a MySQL schema (the app uses `testdrive` as default) and extract the `/protected/data/testdrive.sql` dump to that schema.
-4. Modify the `/protected/config/main.php` file to reflect your database credentials.
-5. Customize to your needs and desires.
-
-## Important
-My skeleton application relies on PHPs APC extension for session and caching. This may not be enabled on your web host. If that's the case, I recommend falling back on the CFileCache provided in the Yii Framework. These settings are in the `/protected/config/main.php` file.
+## Notice
+This is a general starting point for beginning development of your project. You should have some understanding of the Yii Framework and your own server environment in order to get this skeleton app configured and working on your local environment. By default, this application is configured to my WAMP server.
