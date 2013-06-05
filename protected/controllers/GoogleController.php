@@ -51,6 +51,9 @@ class GoogleController extends Controller {
                     app()->end();
                 }
             } else {
+                // nothing found, this person should register
+                // To maintain consistency, the user will be prompted to register with the data we found, rather than just storing it blindly
+                /*
                 $user = $plus->people->get('me');
                 $model = new User('create');
                 $model->email = $tokenInfo->email;
@@ -60,9 +63,11 @@ class GoogleController extends Controller {
                 $model->activate = User::encrypt(microtime() . $model->password);
                 $model->save();
                 $mail = new Mailer('gRegister', array('username' => $model->email, 'password' => $model->pass1, 'activate' => $model->activate));
+                */
                 /**
                  * Be sure to configure properly! Check https://github.com/Synchro/PHPMailer for documentation.
                  */
+                /*
                 $mail->render();
                 $mail->From = app()->params['adminEmail'];
                 $mail->FromName = app()->params['adminEmailName'];
@@ -83,6 +88,7 @@ class GoogleController extends Controller {
                     echo json_encode(array('error' => 'System Authentication Failed', 'code' => 'auth'));
                     app()->end();
                 }
+                */
             }
         } else {
             throw new CHttpException(403);
