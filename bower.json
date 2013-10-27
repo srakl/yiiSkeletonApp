@@ -1,0 +1,20 @@
+{
+    "name": "travisstroud/yiiSkeletonApp",
+    "authors": [
+        "Travis Stroud <travis@travisstroud.com>"
+    ],
+    "description": "Frontend libraries for my skeleton app.",
+    "main": "./js/main.js",
+    "private": true,
+    "dependencies": {
+        "font-awesome":"latest",
+        "notify-bar":"https://github.com/dknight/jQuery-Notify-bar.git"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ]
+}

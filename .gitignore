@@ -7,6 +7,9 @@ crontab.txt
 /.vagrant
 /.project
 /.idea*
+private/runtime*
+public/assets*
+public/vendor*
 
 # archives and other useless files
 *.swp

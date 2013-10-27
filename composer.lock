@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1b7d4cc66a137cffd056da2fdbbd9121",
+    "hash": "58ef5b80ddc676a1bdef0ee025365cff",
     "packages": [
         {
             "name": "crisu83/yii-bootstrap",
@@ -43,23 +43,14 @@
             "time": "2013-08-25 16:56:18"
         },
         {
-            "name": "vernes/yiimailer",
-            "version": "dev-master",
+            "name": "dknight/jQuery-Notify-bar",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/vernes/YiiMailer.git",
-                "reference": "9161ae1b2489f99f4befbd12db0fd9c145a8b6de"
+                "url": "git://github.com/dknight/jQuery-Notify-bar.git",
+                "reference": "master"
             },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/vernes/YiiMailer/archive/9161ae1b2489f99f4befbd12db0fd9c145a8b6de.zip",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "yii-extension",
-            "description": "Yii extension for sending emails with layouts using PHPMailer",
-            "homepage": "https://github.com/vernes/YiiMailer",
-            "time": "2013-06-03 22:31:13"
+            "type": "library"
         },
         {
             "name": "yiisoft/yii",
@@ -501,8 +492,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "crisu83/yii-less": 20,
-        "vernes/yiimailer": 20
+        "crisu83/yii-less": 20
     },
     "platform": {
         "php": ">=5.3.2"

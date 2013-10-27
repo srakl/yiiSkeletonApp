@@ -11,10 +11,10 @@
         {"type":"composer", "url":"http://packages.phundament.com"},
         {"type": "package",
             "package": {
-                "name": "gregmolnar/yii-less",
+                "name": "dknight/jQuery-Notify-bar",
                 "version": "1.0.0",
                 "source": {
-                    "url": "git://github.com/gregmolnar/yii-less.git",
+                    "url": "git://github.com/dknight/jQuery-Notify-bar.git",
                     "type": "git",
                     "reference": "master"
                 }
@@ -25,7 +25,7 @@
         "php":">=5.3.2",
         "crisu83/yii-bootstrap":"2.0.3",
         "crisu83/yii-less":"dev-master",
-        "vernes/yiimailer":"dev-master",
+        "dknight/jQuery-Notify-bar":"1.0.0",
         "yiisoft/yii":"1.1.14"
     },
     "require-dev":{
