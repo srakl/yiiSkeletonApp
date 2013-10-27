@@ -39,7 +39,7 @@ class Shared extends CApplicationComponent {
 
         $file = $trace[0]['file'];
         $line = $trace[0]['line'];
-        $pos = strpos($file, 'protected');
+        $pos = strpos($file, 'app');
         $file = substr($file, $pos);
         $output = "";
         $output .= $file . " (" . $line . "): ";

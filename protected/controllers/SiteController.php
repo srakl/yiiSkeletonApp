@@ -12,7 +12,7 @@ class SiteController extends Controller {
                 'class' => 'CCaptchaAction',
                 'backColor' => 0xFFFFFF,
             ),
-            // page action renders "static" pages stored under 'protected/views/site/pages'
+            // page action renders "static" pages stored under 'app/views/site/pages'
             // They can be accessed via: index.php?r=site/page&view=FileName
             'page' => array(
                 'class' => 'CViewAction',
@@ -25,8 +25,8 @@ class SiteController extends Controller {
      * when an action is not explicitly requested by users.
      */
     public function actionIndex() {
-        // renders the view file 'protected/views/site/index.php'
-        // using the default layout 'protected/views/layouts/main.php'
+        // renders the view file 'app/views/site/index.php'
+        // using the default layout 'app/views/layouts/main.php'
         $this->render('index');
     }
 

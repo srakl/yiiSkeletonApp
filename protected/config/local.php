@@ -1,14 +1,19 @@
 <?php
 
-Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'extensions/bootstrap');
+$applicationDirectory = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+
 return array(
-    'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
+    'basePath' => $applicationDirectory,
     'name' => 'Yii Skeleton App',
     'preload' => array('app', 'less', 'log'),
+    'aliases' => array(
+        'vendor' => $applicationDirectory . '/../vendor',
+        'bootstrap' => 'vendor.crisu83.yii-bootstrap',
+    ),
     'import' => array(
         'application.models.*',
         'application.components.*',
-        'ext.mailer.components.*',
+        'vendor.vernes.yii-mailer.*',
     ),
     'modules' => array(
     ),
@@ -49,7 +54,7 @@ return array(
             'class' => 'CFileCache',
         ),
         'bootstrap' => array(
-            'class' => 'ext.bootstrap.components.Bootstrap',
+            'class' => 'vendor.crisu83.yii-bootstrap.components.Bootstrap',
         ),
         'errorHandler' => array(
             'errorAction' => 'site/error',
@@ -73,11 +78,10 @@ return array(
                 ),
             ),
         ),
-        'less' => array(
-            'class' => 'ext.less.components.LessCompiler',
-            'forceCompile' => false,
-            'paths' => array(
-                'css/system.less' => 'css/system.css',
+        'less'=>array(
+            'class'=>'vendor.crisu83.yii-less.components.LessClientCompiler',
+            'files'=>array(
+                'css/system.less'=>'css/system.css',
             ),
         ),
     ),
